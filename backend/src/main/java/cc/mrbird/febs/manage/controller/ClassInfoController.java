@@ -64,6 +64,7 @@ public class ClassInfoController {
      */
     @PostMapping
     public R save(ClassInfo classInfo) {
+        classInfo.setCode("CS-" + System.currentTimeMillis());
         classInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(classInfoService.save(classInfo));
     }
