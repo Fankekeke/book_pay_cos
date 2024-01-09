@@ -3,6 +3,10 @@ package cc.mrbird.febs.manage.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -18,6 +22,12 @@ import lombok.experimental.Accessors;
 public class StudentInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
     /**
      * 学生姓名
@@ -42,7 +52,7 @@ public class StudentInfo implements Serializable {
     /**
      * 出生日期
      */
-    private LocalDate birthday;
+    private String birthday;
 
     /**
      * 省份
@@ -67,7 +77,7 @@ public class StudentInfo implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime createDate;
+    private String createDate;
 
     /**
      * 联系方式
@@ -84,5 +94,6 @@ public class StudentInfo implements Serializable {
      */
     private String major;
 
-
+    @TableField(exist = false)
+    private String className;
 }

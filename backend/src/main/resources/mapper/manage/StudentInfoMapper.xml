@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cc.mrbird.febs.manage.mapper.StudentInfoMapper">
+<mapper namespace="cc.mrbird.febs.manage.dao.StudentInfoMapper">
 
+    <!-- 分页获取学生信息 -->
+    <select id="selectStudentPage" resultType="java.util.LinkedHashMap">
+        select
+        si.id,
+        si.student_name,
+        si.code,
+        si.sex,
+        si.class_id,
+        si.birthday,
+        si.province,
+        si.city,
+        si.area,
+        si.address,
+        si.create_date,
+        si.phone,
+        si.images,
+        si.major,
+        ci.class_name
+        from
+        student_info si
+        left join class_info ci on (ci.id = si.class_id)
+        where
+        1 = 1
+        <if test="studentInfo.studentName != null and studentInfo.studentName != ''">
+            AND si.student_name LIKE CONCAT('%',#{studentInfo.studentName},'%')
+        </if>
+        <if test="studentInfo.sex != null and studentInfo.sex != ''">
+            AND si.sex = #{studentInfo.sex}
+        </if>
+        <if test="studentInfo.className != null and studentInfo.className != ''">
+            AND ci.class_name LIKE CONCAT('%',#{studentInfo.className},'%')
+        </if>
+        order by
+        si.create_date desc
+
+    </select>
 </mapper>

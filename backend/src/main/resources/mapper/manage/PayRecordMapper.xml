@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cc.mrbird.febs.manage.mapper.PayRecordMapper">
+<mapper namespace="cc.mrbird.febs.manage.dao.PayRecordMapper">
 
+    <!-- 分页获取支付记录信息 -->
+    <select id="selectRecordPage" resultType="java.util.LinkedHashMap">
+        select
+        id,
+        student_id,
+        book_id,
+        status,
+        pay_date,
+        price,
+        create_date,
+        si.code as studentCode,
+        si.student_name,
+        si.images as studentImages,
+        bi.book_name,
+        bi.auther
+        from
+        pay_record pr
+        left join student_info si on
+        (si.id = pr.student_id)
+        left join book_info bi on
+        (bi.id = pr.book_id)
+        where
+        1 = 1
+        <if test="payRecord.bookName != null and payRecord.bookName != ''">
+            AND bi.book_name LIKE CONCAT('%',#{payRecord.bookName},'%')
+        </if>
+        <if test="payRecord.studentName != null and payRecord.studentName != ''">
+            AND si.student_name LIKE CONCAT('%',#{payRecord.studentName},'%')
+        </if>
+        <if test="payRecord.status != null and payRecord.status != ''">
+            AND si.status = #{payRecord.status}
+        </if>
+        order by
+        pr.create_date desc
+    </select>
 </mapper>
