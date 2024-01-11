@@ -1,10 +1,10 @@
 <template>
-  <a-card :bordered="false" book="card-area">
-    <div :book="advanced ? 'search' : null">
+  <a-card :bordered="false" class="card-area">
+    <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <a-row :gutter="15">
-          <div :book="advanced ? null: 'fold'">
+          <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
                 label="图书名称"
@@ -38,7 +38,7 @@
       </a-form>
     </div>
     <div>
-      <div book="operator">
+      <div class="operator">
         <a-button type="primary" ghost @click="add">新增</a-button>
       </div>
       <!-- 表格区域 -->
