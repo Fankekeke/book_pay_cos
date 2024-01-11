@@ -18,7 +18,7 @@ import java.util.List;
  * @author FanK
  */
 @RestController
-@RequestMapping("/manage/bulletin-info")
+@RequestMapping("/cos/bulletin-info")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BulletinInfoController {
 

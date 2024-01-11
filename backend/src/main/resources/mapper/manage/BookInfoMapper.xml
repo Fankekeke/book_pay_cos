@@ -6,11 +6,13 @@
     <select id="selectBookPage" resultType="java.util.LinkedHashMap">
         select
         id,
+        code,
         book_name,
         auther,
         press,
         key_word,
         content,
+        images,
         `type`,
         create_date
         from

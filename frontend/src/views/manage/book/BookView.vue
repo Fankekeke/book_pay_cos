@@ -1,51 +1,51 @@
 <template>
-  <a-modal v-model="show" title="学生详情" @cancel="onClose" :width="1200">
+  <a-modal v-model="show" title="图书详情" @cancel="onClose" :width="1200">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭
       </a-button>
     </template>
-    <div style="font-size: 13px;font-family: SimHei" v-if="userData !== null">
+    <div style="font-size: 13px;font-family: SimHei" v-if="bookData !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">学生信息</span></a-col>
-        <a-col :span="8"><b>学生名称：</b>
-          {{ userData.studentName }}
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">图书信息</span></a-col>
+        <a-col :span="8"><b>图书名称：</b>
+          {{ bookData.studentName }}
         </a-col>
-        <a-col :span="8"><b>学生学号：</b>
-          {{ userData.code }}
+        <a-col :span="8"><b>图书学号：</b>
+          {{ bookData.code }}
         </a-col>
         <a-col :span="8"><b>联系方式：</b>
-          {{ userData.phone }}
+          {{ bookData.phone }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="8"><b>省份：</b>
-          {{ userData.province }}
+          {{ bookData.province }}
         </a-col>
         <a-col :span="8"><b>城市：</b>
-          {{ userData.city }}
+          {{ bookData.city }}
         </a-col>
         <a-col :span="8"><b>区：</b>
-          {{ userData.area }}
+          {{ bookData.area }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="8"><b>专业：</b>
-          {{ userData.address }}
+          {{ bookData.address }}
         </a-col>
         <a-col :span="8"><b>注册时间：</b>
-          {{ userData.createDate }}
+          {{ bookData.createDate }}
         </a-col>
         <a-col :span="8"><b>出生日期：</b>
-          {{ userData.birthday }}
+          {{ bookData.birthday }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="24"><b>详细地址：</b>
-          {{ userData.address }}
+          {{ bookData.address }}
         </a-col>
       </a-row>
       <br/>
@@ -61,7 +61,7 @@
           >
             <div v-if="fileList.length < 8">
               <a-icon type="plus" />
-              <div class="ant-upload-text">
+              <div book="ant-upload-text">
                 Upload
               </div>
             </div>
@@ -87,20 +87,20 @@ function getBase64 (file) {
   })
 }
 export default {
-  name: 'userView',
+  name: 'bookView',
   props: {
-    userShow: {
+    bookShow: {
       type: Boolean,
       default: false
     },
-    userData: {
+    bookData: {
       type: Object
     }
   },
   computed: {
     show: {
       get: function () {
-        return this.userShow
+        return this.bookShow
       },
       set: function () {
       }
@@ -116,9 +116,9 @@ export default {
     }
   },
   watch: {
-    userShow: function (value) {
+    bookShow: function (value) {
       if (value) {
-        this.imagesInit(this.userData.images)
+        this.imagesInit(this.bookData.images)
       }
     }
   },

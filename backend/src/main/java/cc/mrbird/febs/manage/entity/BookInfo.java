@@ -28,6 +28,11 @@ public class BookInfo implements Serializable {
     private Integer id;
 
     /**
+     * 图书code
+     */
+    private String code;
+
+    /**
      * 书名
      */
     private String bookName;
@@ -61,6 +66,11 @@ public class BookInfo implements Serializable {
      * 创建时间
      */
     private String createDate;
+
+    /**
+     * 图书图片
+     */
+    private String images;
 
 
 }

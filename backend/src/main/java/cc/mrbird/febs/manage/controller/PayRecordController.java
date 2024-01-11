@@ -17,7 +17,7 @@ import java.util.List;
  * @author FanK
  */
 @RestController
-@RequestMapping("/manage/pay-record")
+@RequestMapping("/cos/pay-record")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PayRecordController {
 

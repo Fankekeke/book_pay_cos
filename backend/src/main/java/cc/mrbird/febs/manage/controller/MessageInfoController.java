@@ -17,7 +17,7 @@ import java.util.List;
  * @author FanK
  */
 @RestController
-@RequestMapping("/manage/message-info")
+@RequestMapping("/cos/message-info")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MessageInfoController {
 

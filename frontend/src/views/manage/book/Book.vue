@@ -1,30 +1,32 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div :class="advanced ? 'search' : null">
+  <a-card :bordered="false" book="card-area">
+    <div :book="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <a-row :gutter="15">
-          <div :class="advanced ? null: 'fold'">
+          <div :book="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="学生姓名"
+                label="图书名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.studentName"/>
+                <a-input v-model="queryParams.bookName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
-              <a-select v-model="queryParams.sex" allowClear>
-                <a-select-option value="1">男</a-select-option>
-                <a-select-option value="2">女</a-select-option>
-              </a-select>
+              <a-form-item
+                label="作者"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}">
+                <a-input v-model="queryParams.auther"/>
+              </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="班级名称"
+                label="关键字"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.className"/>
+                <a-input v-model="queryParams.keyWord"/>
               </a-form-item>
             </a-col>
           </div>
@@ -36,7 +38,7 @@
       </a-form>
     </div>
     <div>
-      <div class="operator">
+      <div book="operator">
         <a-button type="primary" ghost @click="add">新增</a-button>
       </div>
       <!-- 表格区域 -->
@@ -60,53 +62,53 @@
           </template>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="cloud" @click="handleUserViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon type="cloud" @click="handlebookViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
           <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
-    <user-add
-      v-if="userAdd.visiable"
-      @close="handleuserAddClose"
-      @success="handleuserAddSuccess"
-      :userAddVisiable="userAdd.visiable">
-    </user-add>
-    <user-edit
-      ref="userEdit"
-      @close="handleuserEditClose"
-      @success="handleuserEditSuccess"
-      :userEditVisiable="userEdit.visiable">
-    </user-edit>
-    <user-view
-      @close="handleUserViewClose"
-      :userShow="userView.visiable"
-      :userData="userView.data">
-    </user-view>
+    <book-add
+      v-if="bookAdd.visiable"
+      @close="handlebookAddClose"
+      @success="handlebookAddSuccess"
+      :bookAddVisiable="bookAdd.visiable">
+    </book-add>
+    <book-edit
+      ref="bookEdit"
+      @close="handlebookEditClose"
+      @success="handlebookEditSuccess"
+      :bookEditVisiable="bookEdit.visiable">
+    </book-edit>
+    <book-view
+      @close="handlebookViewClose"
+      :bookShow="bookView.visiable"
+      :bookData="bookView.data">
+    </book-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import userAdd from './StudentAdd.vue'
-import userEdit from './StudentEdit.vue'
-import userView from './StudentView.vue'
+import bookAdd from './BookAdd.vue'
+import bookEdit from './BookEdit.vue'
+import bookView from './BookView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'user',
-  components: {RangeDate, userAdd, userEdit, userView},
+  name: 'book',
+  components: {RangeDate, bookAdd, bookEdit, bookView},
   data () {
     return {
       advanced: false,
-      userAdd: {
+      bookAdd: {
         visiable: false
       },
-      userEdit: {
+      bookEdit: {
         visiable: false
       },
-      userView: {
+      bookView: {
         visiable: false,
         data: null
       },
@@ -125,7 +127,7 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      userList: []
+      bookList: []
     }
   },
   computed: {
@@ -134,53 +136,54 @@ export default {
     }),
     columns () {
       return [{
-        title: '学生姓名',
-        dataIndex: 'studentName'
+        title: '图书名称',
+        dataIndex: 'bookName'
       }, {
-        title: '学号',
+        title: '图书编号',
         dataIndex: 'code'
       }, {
-        title: '性别',
-        dataIndex: 'sex',
+        title: '图书类型',
+        dataIndex: 'type',
         customRender: (text, row, index) => {
           switch (text) {
             case '1':
-              return <a-tag color="green">男</a-tag>
+              return <a-tag>医疗</a-tag>
             case '2':
-              return <a-tag color="red">女</a-tag>
+              return <a-tag>科技</a-tag>
+            case '3':
+              return <a-tag>历史</a-tag>
+            case '4':
+              return <a-tag>烹饪</a-tag>
+            case '5':
+              return <a-tag>高数</a-tag>
+            case '6':
+              return <a-tag>小说</a-tag>
+            case '7':
+              return <a-tag>诗词</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '照片',
+        title: '图片',
         dataIndex: 'images',
         customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="user" />
+          if (!record.images) return <a-avatar shape="square" icon="book" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+              <a-avatar shape="square" size={132} icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
             </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            <a-avatar shape="square" icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
           </a-popover>
         }
       }, {
-        title: '出生日期',
-        dataIndex: 'birthday'
+        title: '出版社',
+        dataIndex: 'press'
       }, {
-        title: '联系方式',
-        dataIndex: 'phone'
+        title: '关键词',
+        dataIndex: 'keyWord'
       }, {
-        title: '省份',
-        dataIndex: 'province'
-      }, {
-        title: '城市',
-        dataIndex: 'city'
-      }, {
-        title: '区',
-        dataIndex: 'area'
-      }, {
-        title: '注册时间',
+        title: '等级时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -200,12 +203,12 @@ export default {
     this.fetch()
   },
   methods: {
-    handleUserViewOpen (row) {
-      this.userView.data = row
-      this.userView.visiable = true
+    handlebookViewOpen (row) {
+      this.bookView.data = row
+      this.bookView.visiable = true
     },
-    handleUserViewClose () {
-      this.userView.visiable = false
+    handlebookViewClose () {
+      this.bookView.visiable = false
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -214,26 +217,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.userAdd.visiable = true
+      this.bookAdd.visiable = true
     },
-    handleuserAddClose () {
-      this.userAdd.visiable = false
+    handlebookAddClose () {
+      this.bookAdd.visiable = false
     },
-    handleuserAddSuccess () {
-      this.userAdd.visiable = false
-      this.$message.success('新增学生成功')
+    handlebookAddSuccess () {
+      this.bookAdd.visiable = false
+      this.$message.success('新增图书成功')
       this.search()
     },
     edit (record) {
-      this.$refs.userEdit.setFormValues(record)
-      this.userEdit.visiable = true
+      this.$refs.bookEdit.setFormValues(record)
+      this.bookEdit.visiable = true
     },
-    handleuserEditClose () {
-      this.userEdit.visiable = false
+    handlebookEditClose () {
+      this.bookEdit.visiable = false
     },
-    handleuserEditSuccess () {
-      this.userEdit.visiable = false
-      this.$message.success('修改学生成功')
+    handlebookEditSuccess () {
+      this.bookEdit.visiable = false
+      this.$message.success('修改图书成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -251,7 +254,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/student-info/' + ids).then(() => {
+          that.$delete('/cos/book-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -324,7 +327,7 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      this.$get('/cos/student-info/page', {
+      this.$get('/cos/book-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

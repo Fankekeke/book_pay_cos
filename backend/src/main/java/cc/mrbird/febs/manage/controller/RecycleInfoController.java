@@ -17,7 +17,7 @@ import java.util.List;
  * @author FanK
  */
 @RestController
-@RequestMapping("/manage/recycle-info")
+@RequestMapping("/cos/recycle-info")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecycleInfoController {
 

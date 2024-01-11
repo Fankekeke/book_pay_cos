@@ -17,7 +17,7 @@ import java.util.List;
  * @author FanK
  */
 @RestController
-@RequestMapping("/manage/class-bind-book-info")
+@RequestMapping("/cos/class-bind-book-info")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ClassBindBookInfoController {
 

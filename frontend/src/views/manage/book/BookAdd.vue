@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="新增学生" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增图书" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
@@ -11,87 +11,58 @@
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label='学生姓名' v-bind="formItemLayout">
+          <a-form-item label='图书名称' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'studentName',
-            { rules: [{ required: true, message: '请输入学生姓名!' }] }
+            'bookName',
+            { rules: [{ required: true, message: '请输入图书名称!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='学号' v-bind="formItemLayout">
+          <a-form-item label='作者' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'code',
-            { rules: [{ required: true, message: '请输入学号!' }] }
+            'auther',
+            { rules: [{ required: true, message: '请输入作者!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='所属班级' v-bind="formItemLayout">
+          <a-form-item label='出版社' v-bind="formItemLayout">
+            <a-input v-decorator="[
+            'press',
+            { rules: [{ required: true, message: '请输入出版社!' }] }
+            ]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item label='图书类型' v-bind="formItemLayout">
             <a-select v-decorator="[
-              'classId',
-              { rules: [{ required: true, message: '请输入所属班级!' }] }
+              'type',
+              { rules: [{ required: true, message: '请输入图书类型!' }] }
               ]">
-              <a-select-option :value="item.id" v-for="(item, index) in classList" :key="index">{{ item.className }}</a-select-option>
+              <a-select-option value="1">医疗</a-select-option>
+              <a-select-option value="2">科技</a-select-option>
+              <a-select-option value="3">历史</a-select-option>
+              <a-select-option value="4">烹饪</a-select-option>
+              <a-select-option value="5">高数</a-select-option>
+              <a-select-option value="6">小说</a-select-option>
+              <a-select-option value="7">诗词</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='性别' v-bind="formItemLayout">
-            <a-select v-decorator="[
-              'sex',
-              { rules: [{ required: true, message: '请输入性别!' }] }
-              ]">
-              <a-select-option value="1">男</a-select-option>
-              <a-select-option value="2">女</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='省份' v-bind="formItemLayout">
+          <a-form-item label='关键词' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'province',
-            { rules: [{ required: true, message: '请输入省份!' }] }
-            ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='市区' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'city',
-            { rules: [{ required: true, message: '请输入市区!' }] }
-            ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='区' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'area',
-            { rules: [{ required: true, message: '请输入区!' }] }
-            ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='联系方式' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'phone',
-            { rules: [{ required: true, message: '请输入联系方式!' }] }
-            ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='所属专业' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'major',
-            { rules: [{ required: true, message: '请输入所属专业!' }] }
+            'keyWord',
+            { rules: [{ required: true, message: '请输入关键词!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="24">
-          <a-form-item label='详细地址' v-bind="formItemLayout">
+          <a-form-item label='摘要' v-bind="formItemLayout">
             <a-textarea :rows="4" v-decorator="[
-            'address',
-             { rules: [{ required: true, message: '请输入详细地址!' }] }
+            'content',
+             { rules: [{ required: true, message: '请输入摘要!' }] }
             ]"/>
           </a-form-item>
         </a-col>
@@ -107,7 +78,7 @@
             >
               <div v-if="fileList.length < 8">
                 <a-icon type="plus" />
-                <div class="ant-upload-text">
+                <div book="ant-upload-text">
                   Upload
                 </div>
               </div>
@@ -137,19 +108,19 @@ const formItemLayout = {
   wrapperCol: { span: 24 }
 }
 export default {
-  name: 'userAdd',
+  name: 'bookAdd',
   props: {
-    userAddVisiable: {
+    bookAddVisiable: {
       default: false
     }
   },
   computed: {
     ...mapState({
-      currentUser: state => state.account.user
+      currentbook: state => state.account.book
     }),
     show: {
       get: function () {
-        return this.userAddVisiable
+        return this.bookAddVisiable
       },
       set: function () {
       }
@@ -163,18 +134,10 @@ export default {
       fileList: [],
       previewVisible: false,
       previewImage: '',
-      classList: []
+      bookList: []
     }
   },
-  mounted () {
-    this.selectClassList()
-  },
   methods: {
-    selectClassList () {
-      this.$get('/cos/class-info').then((r) => {
-        this.classList = r.data.data
-      })
-    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -206,7 +169,7 @@ export default {
         values.images = images.length > 0 ? images.join(',') : null
         if (!err) {
           this.loading = true
-          this.$post('/cos/user-info', {
+          this.$post('/cos/book-info', {
             ...values
           }).then((r) => {
             this.reset()
