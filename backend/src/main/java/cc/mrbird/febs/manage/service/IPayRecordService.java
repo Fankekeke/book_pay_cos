@@ -21,4 +21,12 @@ public interface IPayRecordService extends IService<PayRecord> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectRecordPage(Page<PayRecord> page, PayRecord payRecord);
+
+    /**
+     * 获取支付记录详情
+     *
+     * @param id 支付记录ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectRecordDetail(Integer id);
 }

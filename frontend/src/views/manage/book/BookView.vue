@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="图书详情" @cancel="onClose" :width="1200">
+  <a-modal v-model="show" title="图书详情" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭
@@ -9,43 +9,43 @@
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">图书信息</span></a-col>
         <a-col :span="8"><b>图书名称：</b>
-          {{ bookData.studentName }}
+          {{ bookData.bookName }}
         </a-col>
-        <a-col :span="8"><b>图书学号：</b>
+        <a-col :span="8"><b>图书编号：</b>
           {{ bookData.code }}
         </a-col>
-        <a-col :span="8"><b>联系方式：</b>
-          {{ bookData.phone }}
+        <a-col :span="8"><b>作者：</b>
+          {{ bookData.auther }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>省份：</b>
-          {{ bookData.province }}
+        <a-col :span="8"><b>出版社：</b>
+          {{ bookData.press }}
         </a-col>
-        <a-col :span="8"><b>城市：</b>
-          {{ bookData.city }}
+        <a-col :span="8"><b>关键词：</b>
+          {{ bookData.keyWord }}
         </a-col>
-        <a-col :span="8"><b>区：</b>
-          {{ bookData.area }}
+        <a-col :span="8"><b>图书类型：</b>
+          <span v-if="bookData.type == 1">医疗</span>
+          <span v-if="bookData.type == 2">科技</span>
+          <span v-if="bookData.type == 3">历史</span>
+          <span v-if="bookData.type == 4">烹饪</span>
+          <span v-if="bookData.type == 5">高数</span>
+          <span v-if="bookData.type == 6">小说</span>
+          <span v-if="bookData.type == 7">诗词</span>
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>专业：</b>
-          {{ bookData.address }}
+        <a-col :span="8"><b>价格：</b>
+          {{ bookData.price }} 元
         </a-col>
-        <a-col :span="8"><b>注册时间：</b>
+        <a-col :span="8"><b>登记时间：</b>
           {{ bookData.createDate }}
         </a-col>
-        <a-col :span="8"><b>出生日期：</b>
-          {{ bookData.birthday }}
-        </a-col>
-      </a-row>
-      <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="24"><b>详细地址：</b>
-          {{ bookData.address }}
+        <a-col :span="8"><b>摘要：</b>
+          {{ bookData.content }}
         </a-col>
       </a-row>
       <br/>
@@ -61,7 +61,7 @@
           >
             <div v-if="fileList.length < 8">
               <a-icon type="plus" />
-              <div book="ant-upload-text">
+              <div class="ant-upload-text">
                 Upload
               </div>
             </div>

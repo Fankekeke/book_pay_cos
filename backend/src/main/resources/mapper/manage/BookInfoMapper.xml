@@ -10,6 +10,7 @@
         book_name,
         auther,
         press,
+        price,
         key_word,
         content,
         images,

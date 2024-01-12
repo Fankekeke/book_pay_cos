@@ -1,70 +1,42 @@
 <template>
-  <a-modal v-model="show" title="学生详情" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="班级详情" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭
       </a-button>
     </template>
-    <div style="font-size: 13px;font-family: SimHei" v-if="userData !== null">
+    <div style="font-size: 13px;font-family: SimHei" v-if="classData !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">学生信息</span></a-col>
-        <a-col :span="8"><b>学生名称：</b>
-          {{ userData.studentName }}
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">班级信息</span></a-col>
+        <a-col :span="8"><b>班级名称：</b>
+          {{ classData.className }}
         </a-col>
-        <a-col :span="8"><b>学生学号：</b>
-          {{ userData.code }}
+        <a-col :span="8"><b>班级编号：</b>
+          {{ classData.code }}
         </a-col>
-        <a-col :span="8"><b>联系方式：</b>
-          {{ userData.phone }}
+        <a-col :span="8"><b>创建时间：</b>
+          {{ classData.createDate }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>省份：</b>
-          {{ userData.province }}
+        <a-col :span="8"><b>授课老师：</b>
+          {{ classData.instructor }}
         </a-col>
-        <a-col :span="8"><b>城市：</b>
-          {{ userData.city }}
+        <a-col :span="8"><b>助理：</b>
+          {{ classData.assistant }}
         </a-col>
-        <a-col :span="8"><b>区：</b>
-          {{ userData.area }}
-        </a-col>
-      </a-row>
-      <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>专业：</b>
-          {{ userData.address }}
-        </a-col>
-        <a-col :span="8"><b>注册时间：</b>
-          {{ userData.createDate }}
-        </a-col>
-        <a-col :span="8"><b>出生日期：</b>
-          {{ userData.birthday }}
+        <a-col :span="8"><b>辅导员：</b>
+          {{ classData.counselor }}
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="24"><b>详细地址：</b>
-          {{ userData.address }}
+        <a-col :span="24"><b>备注：</b>
+          {{ classData.remark }}
         </a-col>
       </a-row>
       <br/>
-      <a-col :span="24">
-        <a-form-item label='图册' v-bind="formItemLayout">
-          <a-upload
-            name="avatar"
-            action="http://127.0.0.1:9527/file/fileUpload/"
-            list-type="picture-card"
-            :file-list="fileList"
-            @preview="handlePreview"
-            @change="picHandleChange"
-          >
-          </a-upload>
-          <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-            <img alt="example" style="width: 100%" :src="previewImage" />
-          </a-modal>
-        </a-form-item>
-      </a-col>
     </div>
   </a-modal>
 </template>
@@ -81,20 +53,20 @@ function getBase64 (file) {
   })
 }
 export default {
-  name: 'userView',
+  name: 'classView',
   props: {
-    userShow: {
+    classShow: {
       type: Boolean,
       default: false
     },
-    userData: {
+    classData: {
       type: Object
     }
   },
   computed: {
     show: {
       get: function () {
-        return this.userShow
+        return this.classShow
       },
       set: function () {
       }
@@ -110,9 +82,9 @@ export default {
     }
   },
   watch: {
-    userShow: function (value) {
+    classShow: function (value) {
       if (value) {
-        this.imagesInit(this.userData.images)
+        this.imagesInit(this.classData.images)
       }
     }
   },

@@ -65,6 +65,7 @@ public class BookInfoController {
      */
     @PostMapping
     public R save(BookInfo bookInfo) {
+        bookInfo.setCode("BK-" + System.currentTimeMillis());
         bookInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(bookInfoService.save(bookInfo));
     }

@@ -2,4 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.manage.dao.RecycleInfoMapper">
 
+    <!-- 分页获取图书回收信息 -->
+    <select id="selectRecyclePage" resultType="java.util.LinkedHashMap">
+        select
+        ri.id,
+        ri.student_id,
+        ri.book_id,
+        ri.recucle_type,
+        ri.remark,
+        ri.create_date,
+        ri.address,
+        si.student_name,
+        si.code,
+        si.images as studentImages,
+        bi.book_name,
+        bi.`type`,
+        bi.images
+        from
+        recycle_info ri
+        left join student_info si on
+        (si.id = ri.student_id)
+        left join book_info bi on
+        (bi.id = ri.book_id )
+        where
+        1 = 1
+        <if test="recycleInfo.studentName != null and recycleInfo.studentName != ''">
+            AND si.student_name LIKE CONCAT('%',#{recycleInfo.studentName},'%')
+        </if>
+        <if test="recycleInfo.bookName != null and recycleInfo.bookName != ''">
+            AND bi.book_name LIKE CONCAT('%',#{recycleInfo.bookName},'%')
+        </if>
+        order by
+        ri.create_date desc
+    </select>
 </mapper>

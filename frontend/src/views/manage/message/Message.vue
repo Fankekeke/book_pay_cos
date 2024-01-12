@@ -7,26 +7,18 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="图书名称"
+                label="学生名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.bookName"/>
+                <a-input v-model="queryParams.studentName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="作者"
+                label="学号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.auther"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="关键字"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.keyWord"/>
+                <a-input v-model="queryParams.code"/>
               </a-form-item>
             </a-col>
           </div>
@@ -61,54 +53,50 @@
             </a-tooltip>
           </template>
         </template>
+        <template slot="contentShow" slot-scope="text, record">
+          <template>
+            <a-tooltip>
+              <template slot="title">
+                {{ record.content }}
+              </template>
+              {{ record.content.slice(0, 30) }} ...
+            </a-tooltip>
+          </template>
+        </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="cloud" @click="handlebookViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
-          <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改" style="margin-right: 10px"></a-icon>
+          <a-icon type="cloud" @click="handlemessageViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon v-if="record.status == 0" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="editStatus(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
-    <book-add
-      v-if="bookAdd.visiable"
-      @close="handlebookAddClose"
-      @success="handlebookAddSuccess"
-      :bookAddVisiable="bookAdd.visiable">
-    </book-add>
-    <book-edit
-      ref="bookEdit"
-      @close="handlebookEditClose"
-      @success="handlebookEditSuccess"
-      :bookEditVisiable="bookEdit.visiable">
-    </book-edit>
-    <book-view
-      @close="handlebookViewClose"
-      :bookShow="bookView.visiable"
-      :bookData="bookView.data">
-    </book-view>
+    <message-view
+      @close="handlemessageViewClose"
+      :messageShow="messageView.visiable"
+      :messageData="messageView.data">
+    </message-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import bookAdd from './BookAdd.vue'
-import bookEdit from './BookEdit.vue'
-import bookView from './BookView.vue'
+import messageView from './MessageView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'book',
-  components: {RangeDate, bookAdd, bookEdit, bookView},
+  name: 'message',
+  components: {RangeDate, messageView},
   data () {
     return {
       advanced: false,
-      bookAdd: {
+      messageAdd: {
         visiable: false
       },
-      bookEdit: {
+      messageEdit: {
         visiable: false
       },
-      bookView: {
+      messageView: {
         visiable: false,
         data: null
       },
@@ -127,7 +115,7 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      bookList: []
+      messageList: []
     }
   },
   computed: {
@@ -136,57 +124,42 @@ export default {
     }),
     columns () {
       return [{
-        title: '图书名称',
-        dataIndex: 'bookName'
+        title: '学生姓名',
+        dataIndex: 'studentName'
       }, {
-        title: '图书编号',
+        title: '学号',
         dataIndex: 'code'
       }, {
-        title: '图书类型',
-        dataIndex: 'type',
+        title: '学生照片',
+        dataIndex: 'images',
+        customRender: (text, record, index) => {
+          if (!record.images) return <a-avatar shape="square" icon="message" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="message" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            </template>
+            <a-avatar shape="square" icon="message" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+          </a-popover>
+        }
+      }, {
+        title: '状态',
+        dataIndex: 'status',
         customRender: (text, row, index) => {
           switch (text) {
+            case '0':
+              return <a-tag>未读</a-tag>
             case '1':
-              return <a-tag>医疗</a-tag>
-            case '2':
-              return <a-tag>科技</a-tag>
-            case '3':
-              return <a-tag>历史</a-tag>
-            case '4':
-              return <a-tag>烹饪</a-tag>
-            case '5':
-              return <a-tag>高数</a-tag>
-            case '6':
-              return <a-tag>小说</a-tag>
-            case '7':
-              return <a-tag>诗词</a-tag>
+              return <a-tag>已读</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '图片',
-        dataIndex: 'images',
-        customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="book" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-          </a-popover>
-        }
+        title: '内容',
+        dataIndex: 'content',
+        scopedSlots: { customRender: 'contentShow' }
       }, {
-        title: '出版社',
-        dataIndex: 'press'
-      }, {
-        title: '价格',
-        dataIndex: 'price'
-      }, {
-        title: '关键词',
-        dataIndex: 'keyWord'
-      }, {
-        title: '登记时间',
+        title: '发送时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -206,12 +179,19 @@ export default {
     this.fetch()
   },
   methods: {
-    handlebookViewOpen (row) {
-      this.bookView.data = row
-      this.bookView.visiable = true
+    editStatus (record) {
+      record.status = '1'
+      this.$put('/cos/book-info', record).then((r) => {
+        this.$message.success('更新状态成功')
+        this.fetch()
+      })
     },
-    handlebookViewClose () {
-      this.bookView.visiable = false
+    handlemessageViewOpen (row) {
+      this.messageView.data = row
+      this.messageView.visiable = true
+    },
+    handlemessageViewClose () {
+      this.messageView.visiable = false
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -220,26 +200,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.bookAdd.visiable = true
+      this.messageAdd.visiable = true
     },
-    handlebookAddClose () {
-      this.bookAdd.visiable = false
+    handlemessageAddClose () {
+      this.messageAdd.visiable = false
     },
-    handlebookAddSuccess () {
-      this.bookAdd.visiable = false
-      this.$message.success('新增图书成功')
+    handlemessageAddSuccess () {
+      this.messageAdd.visiable = false
+      this.$message.success('新增消息成功')
       this.search()
     },
     edit (record) {
-      this.$refs.bookEdit.setFormValues(record)
-      this.bookEdit.visiable = true
+      this.$refs.messageEdit.setFormValues(record)
+      this.messageEdit.visiable = true
     },
-    handlebookEditClose () {
-      this.bookEdit.visiable = false
+    handlemessageEditClose () {
+      this.messageEdit.visiable = false
     },
-    handlebookEditSuccess () {
-      this.bookEdit.visiable = false
-      this.$message.success('修改图书成功')
+    handlemessageEditSuccess () {
+      this.messageEdit.visiable = false
+      this.$message.success('修改消息成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -257,7 +237,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/book-info/' + ids).then(() => {
+          that.$delete('/cos/message-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -330,7 +310,7 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      this.$get('/cos/book-info/page', {
+      this.$get('/cos/message-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

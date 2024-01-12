@@ -1,5 +1,6 @@
 package cc.mrbird.febs.manage.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
@@ -46,6 +47,11 @@ public class BookInfo implements Serializable {
      * 出版社
      */
     private String press;
+
+    /**
+     * 价格
+     */
+    private BigDecimal price;
 
     /**
      * 关键词

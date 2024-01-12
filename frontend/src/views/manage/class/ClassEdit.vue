@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="修改图书" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="修改班级" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
@@ -11,89 +11,43 @@
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label='图书名称' v-bind="formItemLayout">
+          <a-form-item label='班级名称' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'bookName',
-            { rules: [{ required: true, message: '请输入图书名称!' }] }
+            'className',
+            { rules: [{ required: true, message: '请输入班级名称!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='作者' v-bind="formItemLayout">
+          <a-form-item label='授课老师' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'auther',
-            { rules: [{ required: true, message: '请输入作者!' }] }
+            'instructor',
+            { rules: [{ required: true, message: '请输入授课老师!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label="价格（元）">
-            <a-input-number style="width: 100%" v-decorator="[
-              'price', { rules: [{ required: true, message: '请填写价格!' }] }
-              ]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='出版社' v-bind="formItemLayout">
+          <a-form-item label='助理' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'press',
-            { rules: [{ required: true, message: '请输入出版社!' }] }
+            'assistant',
+            { rules: [{ required: true, message: '请输入助理!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='图书类型' v-bind="formItemLayout">
-            <a-select v-decorator="[
-              'type',
-              { rules: [{ required: true, message: '请输入图书类型!' }] }
-              ]">
-              <a-select-option value="1">医疗</a-select-option>
-              <a-select-option value="2">科技</a-select-option>
-              <a-select-option value="3">历史</a-select-option>
-              <a-select-option value="4">烹饪</a-select-option>
-              <a-select-option value="5">高数</a-select-option>
-              <a-select-option value="6">小说</a-select-option>
-              <a-select-option value="7">诗词</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label='关键词' v-bind="formItemLayout">
+          <a-form-item label='辅导员' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'keyWord',
-            { rules: [{ required: true, message: '请输入关键词!' }] }
+            'counselor',
+            { rules: [{ required: true, message: '请输入辅导员!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="24">
-          <a-form-item label='摘要' v-bind="formItemLayout">
+          <a-form-item label='备注' v-bind="formItemLayout">
             <a-textarea :rows="4" v-decorator="[
-            'content',
-             { rules: [{ required: true, message: '请输入摘要!' }] }
+            'remark',
+             { rules: [{ required: true, message: '请输入备注!' }] }
             ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="24">
-          <a-form-item label='图册' v-bind="formItemLayout">
-            <a-upload
-              name="avatar"
-              action="http://127.0.0.1:9527/file/fileUpload/"
-              list-type="picture-card"
-              :file-list="fileList"
-              @preview="handlePreview"
-              @change="picHandleChange"
-            >
-              <div v-if="fileList.length < 8">
-                <a-icon type="plus" />
-                <div class="ant-upload-text">
-                  Upload
-                </div>
-              </div>
-            </a-upload>
-            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-              <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
           </a-form-item>
         </a-col>
       </a-row>
@@ -116,9 +70,9 @@ const formItemLayout = {
   wrapperCol: { span: 24 }
 }
 export default {
-  name: 'bookEdit',
+  name: 'classEdit',
   props: {
-    bookEditVisiable: {
+    classEditVisiable: {
       default: false
     }
   },
@@ -128,7 +82,7 @@ export default {
     }),
     show: {
       get: function () {
-        return this.bookEditVisiable
+        return this.classEditVisiable
       },
       set: function () {
       }
@@ -143,7 +97,7 @@ export default {
       fileList: [],
       previewVisible: false,
       previewImage: '',
-      bookList: []
+      classList: []
     }
   },
   methods: {
@@ -169,18 +123,18 @@ export default {
         this.fileList = imageList
       }
     },
-    setFormValues ({...book}) {
-      this.rowId = book.id
-      let fields = ['bookName', 'auther', 'press', 'keyWord', 'content', 'type', 'price']
+    setFormValues ({...classes}) {
+      this.rowId = classes.id
+      let fields = ['className', 'instructor', 'assistant', 'counselor', 'remark']
       let obj = {}
-      Object.keys(book).forEach((key) => {
+      Object.keys(classes).forEach((key) => {
         if (key === 'images') {
           this.fileList = []
-          this.imagesInit(book['images'])
+          this.imagesInit(classes['images'])
         }
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
-          obj[key] = book[key]
+          obj[key] = classes[key]
         }
       })
       this.form.setFieldsValue(obj)
@@ -208,7 +162,7 @@ export default {
         values.images = images.length > 0 ? images.join(',') : null
         if (!err) {
           this.loading = true
-          this.$put('/cos/book-info', {
+          this.$put('/cos/class-info', {
             ...values
           }).then((r) => {
             this.reset()

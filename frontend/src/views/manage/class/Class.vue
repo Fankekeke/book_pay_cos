@@ -7,26 +7,18 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="图书名称"
+                label="班级名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.bookName"/>
+                <a-input v-model="queryParams.className"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="作者"
+                label="班级编号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.auther"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="关键字"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.keyWord"/>
+                <a-input v-model="queryParams.code"/>
               </a-form-item>
             </a-col>
           </div>
@@ -62,53 +54,53 @@
           </template>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="cloud" @click="handlebookViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon type="cloud" @click="handleclassViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
           <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
-    <book-add
-      v-if="bookAdd.visiable"
-      @close="handlebookAddClose"
-      @success="handlebookAddSuccess"
-      :bookAddVisiable="bookAdd.visiable">
-    </book-add>
-    <book-edit
-      ref="bookEdit"
-      @close="handlebookEditClose"
-      @success="handlebookEditSuccess"
-      :bookEditVisiable="bookEdit.visiable">
-    </book-edit>
-    <book-view
-      @close="handlebookViewClose"
-      :bookShow="bookView.visiable"
-      :bookData="bookView.data">
-    </book-view>
+    <class-add
+      v-if="classAdd.visiable"
+      @close="handleclassAddClose"
+      @success="handleclassAddSuccess"
+      :classAddVisiable="classAdd.visiable">
+    </class-add>
+    <class-edit
+      ref="classEdit"
+      @close="handleclassEditClose"
+      @success="handleclassEditSuccess"
+      :classEditVisiable="classEdit.visiable">
+    </class-edit>
+    <class-view
+      @close="handleclassViewClose"
+      :classShow="classView.visiable"
+      :classData="classView.data">
+    </class-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import bookAdd from './BookAdd.vue'
-import bookEdit from './BookEdit.vue'
-import bookView from './BookView.vue'
+import classAdd from './ClassAdd.vue'
+import classEdit from './ClassEdit.vue'
+import classView from './ClassView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'book',
-  components: {RangeDate, bookAdd, bookEdit, bookView},
+  name: 'class',
+  components: {RangeDate, classAdd, classEdit, classView},
   data () {
     return {
       advanced: false,
-      bookAdd: {
+      classAdd: {
         visiable: false
       },
-      bookEdit: {
+      classEdit: {
         visiable: false
       },
-      bookView: {
+      classView: {
         visiable: false,
         data: null
       },
@@ -127,7 +119,7 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      bookList: []
+      classList: []
     }
   },
   computed: {
@@ -136,57 +128,34 @@ export default {
     }),
     columns () {
       return [{
-        title: '图书名称',
-        dataIndex: 'bookName'
-      }, {
-        title: '图书编号',
+        title: '班级编号',
         dataIndex: 'code'
       }, {
-        title: '图书类型',
-        dataIndex: 'type',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case '1':
-              return <a-tag>医疗</a-tag>
-            case '2':
-              return <a-tag>科技</a-tag>
-            case '3':
-              return <a-tag>历史</a-tag>
-            case '4':
-              return <a-tag>烹饪</a-tag>
-            case '5':
-              return <a-tag>高数</a-tag>
-            case '6':
-              return <a-tag>小说</a-tag>
-            case '7':
-              return <a-tag>诗词</a-tag>
-            default:
-              return '- -'
-          }
-        }
+        title: '班级名称',
+        dataIndex: 'className'
       }, {
         title: '图片',
         dataIndex: 'images',
         customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="book" />
+          if (!record.images) return <a-avatar shape="square" icon="class" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+              <a-avatar shape="square" size={132} icon="class" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
             </template>
-            <a-avatar shape="square" icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            <a-avatar shape="square" icon="class" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
           </a-popover>
         }
       }, {
-        title: '出版社',
-        dataIndex: 'press'
+        title: '授课老师',
+        dataIndex: 'instructor'
       }, {
-        title: '价格',
-        dataIndex: 'price'
+        title: '助理',
+        dataIndex: 'assistant'
       }, {
-        title: '关键词',
-        dataIndex: 'keyWord'
+        title: '辅导员',
+        dataIndex: 'counselor'
       }, {
-        title: '登记时间',
+        title: '创建时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -206,12 +175,12 @@ export default {
     this.fetch()
   },
   methods: {
-    handlebookViewOpen (row) {
-      this.bookView.data = row
-      this.bookView.visiable = true
+    handleclassViewOpen (row) {
+      this.classView.data = row
+      this.classView.visiable = true
     },
-    handlebookViewClose () {
-      this.bookView.visiable = false
+    handleclassViewClose () {
+      this.classView.visiable = false
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -220,26 +189,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.bookAdd.visiable = true
+      this.classAdd.visiable = true
     },
-    handlebookAddClose () {
-      this.bookAdd.visiable = false
+    handleclassAddClose () {
+      this.classAdd.visiable = false
     },
-    handlebookAddSuccess () {
-      this.bookAdd.visiable = false
-      this.$message.success('新增图书成功')
+    handleclassAddSuccess () {
+      this.classAdd.visiable = false
+      this.$message.success('新增班级成功')
       this.search()
     },
     edit (record) {
-      this.$refs.bookEdit.setFormValues(record)
-      this.bookEdit.visiable = true
+      this.$refs.classEdit.setFormValues(record)
+      this.classEdit.visiable = true
     },
-    handlebookEditClose () {
-      this.bookEdit.visiable = false
+    handleclassEditClose () {
+      this.classEdit.visiable = false
     },
-    handlebookEditSuccess () {
-      this.bookEdit.visiable = false
-      this.$message.success('修改图书成功')
+    handleclassEditSuccess () {
+      this.classEdit.visiable = false
+      this.$message.success('修改班级成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -257,7 +226,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/book-info/' + ids).then(() => {
+          that.$delete('/cos/class-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -330,7 +299,7 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      this.$get('/cos/book-info/page', {
+      this.$get('/cos/class-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

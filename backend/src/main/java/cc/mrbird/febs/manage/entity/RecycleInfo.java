@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,6 +44,11 @@ public class RecycleInfo implements Serializable {
     private String recucleType;
 
     /**
+     * 捐赠或回收地址
+     */
+    private String address;
+
+    /**
      * 备注消息
      */
     private String remark;
@@ -52,5 +58,9 @@ public class RecycleInfo implements Serializable {
      */
     private String createDate;
 
+    @TableField(exist = false)
+    private String studentName;
+    @TableField(exist = false)
+    private String bookName;
 
 }

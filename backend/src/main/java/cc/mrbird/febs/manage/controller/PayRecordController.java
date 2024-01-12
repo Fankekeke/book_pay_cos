@@ -47,6 +47,17 @@ public class PayRecordController {
     }
 
     /**
+     * 获取支付记录详情
+     *
+     * @param id 支付记录ID
+     * @return 结果
+     */
+    @GetMapping("/recordDetail/{id}")
+    public R recordDetail(@PathVariable("id") Integer id) {
+        return R.ok(payRecordService.selectRecordDetail(id));
+    }
+
+    /**
      * 获取支付记录列表
      *
      * @return 结果

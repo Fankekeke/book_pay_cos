@@ -27,6 +27,14 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
+          <a-form-item label="价格（元）">
+            <a-input-number style="width: 100%" v-decorator="[
+              'price', { rules: [{ required: true, message: '请填写价格!' }] }
+              ]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
           <a-form-item label='出版社' v-bind="formItemLayout">
             <a-input v-decorator="[
             'press',
@@ -78,7 +86,7 @@
             >
               <div v-if="fileList.length < 8">
                 <a-icon type="plus" />
-                <div book="ant-upload-text">
+                <div class="ant-upload-text">
                   Upload
                 </div>
               </div>
@@ -116,7 +124,7 @@ export default {
   },
   computed: {
     ...mapState({
-      currentbook: state => state.account.book
+      currentUser: state => state.account.user
     }),
     show: {
       get: function () {
