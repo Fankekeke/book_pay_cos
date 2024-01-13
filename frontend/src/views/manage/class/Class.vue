@@ -134,18 +134,6 @@ export default {
         title: '班级名称',
         dataIndex: 'className'
       }, {
-        title: '图片',
-        dataIndex: 'images',
-        customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="class" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="class" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="class" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-          </a-popover>
-        }
-      }, {
         title: '授课老师',
         dataIndex: 'instructor'
       }, {

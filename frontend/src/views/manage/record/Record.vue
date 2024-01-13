@@ -70,18 +70,6 @@
         </template>
       </a-table>
     </div>
-    <record-add
-      v-if="recordAdd.visiable"
-      @close="handlerecordAddClose"
-      @success="handlerecordAddSuccess"
-      :recordAddVisiable="recordAdd.visiable">
-    </record-add>
-    <record-edit
-      ref="recordEdit"
-      @close="handlerecordEditClose"
-      @success="handlerecordEditSuccess"
-      :recordEditVisiable="recordEdit.visiable">
-    </record-edit>
     <record-view
       @close="handlerecordViewClose"
       :recordShow="recordView.visiable"
@@ -93,15 +81,13 @@
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import recordAdd from './recordAdd.vue'
-import recordEdit from './recordEdit.vue'
 import recordView from './RecordView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
   name: 'record',
-  components: {RangeDate, recordAdd, recordEdit, recordView},
+  components: {RangeDate, recordView},
   data () {
     return {
       advanced: false,
@@ -257,7 +243,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/record-info/' + ids).then(() => {
+          that.$delete('/cos/pay-record/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -330,7 +316,7 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      this.$get('/cos/record-info/page', {
+      this.$get('/cos/pay-record/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

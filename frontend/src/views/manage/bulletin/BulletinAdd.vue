@@ -27,17 +27,6 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='公告类型' v-bind="formItemLayout">
-            <a-select v-decorator="[
-              'type',
-              { rules: [{ required: true, message: '请输入公告类型!' }] }
-              ]">
-              <a-select-option value="1">通知</a-select-option>
-              <a-select-option value="2">公告</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
           <a-form-item label='公告状态' v-bind="formItemLayout">
             <a-select v-decorator="[
               'rackUp',
@@ -157,7 +146,6 @@ export default {
       this.form.validateFields((err, values) => {
         values.images = images.length > 0 ? images.join(',') : null
         if (!err) {
-          values.publisher = this.currentUser.userId
           this.loading = true
           this.$post('/cos/bulletin-info', {
             ...values

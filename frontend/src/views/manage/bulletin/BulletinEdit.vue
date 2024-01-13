@@ -27,17 +27,6 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='公告类型' v-bind="formItemLayout">
-            <a-select v-decorator="[
-              'type',
-              { rules: [{ required: true, message: '请输入公告类型!' }] }
-              ]">
-              <a-select-option value="1">通知</a-select-option>
-              <a-select-option value="2">公告</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
           <a-form-item label='公告状态' v-bind="formItemLayout">
             <a-select v-decorator="[
               'rackUp',
@@ -152,14 +141,14 @@ export default {
     },
     setFormValues ({...bulletin}) {
       this.rowId = bulletin.id
-      let fields = ['title', 'content', 'publisher', 'rackUp', 'type']
+      let fields = ['title', 'content', 'publisher', 'rackUp']
       let obj = {}
       Object.keys(bulletin).forEach((key) => {
         if (key === 'images') {
           this.fileList = []
           this.imagesInit(bulletin['images'])
         }
-        if (key === 'rackUp' || key === 'type') {
+        if (key === 'rackUp') {
           bulletin[key] = bulletin[key].toString()
         }
         if (fields.indexOf(key) !== -1) {

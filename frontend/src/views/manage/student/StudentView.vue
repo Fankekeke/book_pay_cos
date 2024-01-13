@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="学生详情" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="学生详情" @cancel="onClose" :width="900">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭

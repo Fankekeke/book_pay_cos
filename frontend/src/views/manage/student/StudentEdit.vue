@@ -72,6 +72,14 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
+          <a-form-item label='出生日期' v-bind="formItemLayout">
+            <a-date-picker style="width: 100%;" v-decorator="[
+            'birthday',
+            { rules: [{ required: true, message: '请输入出生日期!' }] }
+            ]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
           <a-form-item label='联系方式' v-bind="formItemLayout">
             <a-input v-decorator="[
             'phone',
@@ -124,6 +132,8 @@
 
 <script>
 import {mapState} from 'vuex'
+import moment from 'moment'
+moment.locale('zh-cn')
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -171,8 +181,9 @@ export default {
     this.selectClassList()
   },
   methods: {
+    moment,
     selectClassList () {
-      this.$get('/cos/class-info').then((r) => {
+      this.$get('/cos/class-info/list').then((r) => {
         this.classList = r.data.data
       })
     },
@@ -207,6 +218,11 @@ export default {
           this.fileList = []
           this.imagesInit(user['images'])
         }
+        if (key === 'birthday') {
+          if (key === 'birthday' && user[key] != null) {
+            user[key] = moment(user[key])
+          }
+        }
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
           obj[key] = user[key]
@@ -235,6 +251,7 @@ export default {
       this.form.validateFields((err, values) => {
         values.id = this.rowId
         values.images = images.length > 0 ? images.join(',') : null
+        values.birthday = moment(values.birthday).format('YYYY-MM-DD')
         if (!err) {
           this.loading = true
           this.$put('/cos/student-info', {

@@ -14,10 +14,15 @@
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
-              <a-select v-model="queryParams.sex" allowClear>
-                <a-select-option value="1">男</a-select-option>
-                <a-select-option value="2">女</a-select-option>
-              </a-select>
+              <a-form-item
+                label="性别"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}">
+                <a-select v-model="queryParams.sex" allowClear>
+                  <a-select-option value="1">男</a-select-option>
+                  <a-select-option value="2">女</a-select-option>
+                </a-select>
+              </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
@@ -164,6 +169,9 @@ export default {
             <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
           </a-popover>
         }
+      }, {
+        title: '班级名称',
+        dataIndex: 'className'
       }, {
         title: '出生日期',
         dataIndex: 'birthday'
