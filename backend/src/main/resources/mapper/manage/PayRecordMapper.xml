@@ -5,13 +5,13 @@
     <!-- 分页获取支付记录信息 -->
     <select id="selectRecordPage" resultType="java.util.LinkedHashMap">
         select
-        id,
-        student_id,
-        book_id,
-        status,
-        pay_date,
-        price,
-        create_date,
+        pr.id,
+        pr.student_id,
+        pr.book_id,
+        pr.status,
+        pr.pay_date,
+        pr.price,
+        pr.create_date,
         si.code as studentCode,
         si.student_name,
         si.images as studentImages,

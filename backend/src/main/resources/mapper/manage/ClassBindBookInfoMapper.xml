@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.manage.dao.ClassBindBookInfoMapper">
 
+    <!-- 分页获取班级绑定图书信息 -->
+    <select id="selectBindPage" resultType="java.util.LinkedHashMap">
+        SELECT
+            cbbi.id,
+            cbbi.class_id,
+            cbbi.book_id,
+            cbbi.create_date,
+            bi.book_name,
+            bi.images,
+            bi.type,
+            ci.class_name,
+            ci.counselor
+        FROM
+            class_bind_book_info cbbi
+                LEFT JOIN book_info bi ON ( bi.id = cbbi.book_id )
+                LEFT JOIN class_info ci ON ( ci.id = cbbi.class_id )
+        WHERE
+            1 = 1
+        <if test="classBindBookInfo.bookName != null and classBindBookInfo.bookName != ''">
+            AND bi.book_name LIKE CONCAT('%',#{classBindBookInfo.bookName},'%')
+        </if>
+        <if test="classBindBookInfo.className != null and classBindBookInfo.className != ''">
+            AND ci.class_name LIKE CONCAT('%',#{classBindBookInfo.className},'%')
+        </if>
+        ORDER BY
+            cbbi.create_date DESC
+    </select>
 </mapper>

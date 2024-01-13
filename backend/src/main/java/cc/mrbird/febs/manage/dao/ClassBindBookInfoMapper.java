@@ -20,5 +20,5 @@ public interface ClassBindBookInfoMapper extends BaseMapper<ClassBindBookInfo> {
      * @param classBindBookInfo 班级绑定图书信息
      * @return 结果
      */
-    IPage<LinkedHashMap<String, Object>> selectPage(Page<ClassBindBookInfo> page, @Param("classBindBookInfo") ClassBindBookInfo classBindBookInfo);
+    IPage<LinkedHashMap<String, Object>> selectBindPage(Page<ClassBindBookInfo> page, @Param("classBindBookInfo") ClassBindBookInfo classBindBookInfo);
 }

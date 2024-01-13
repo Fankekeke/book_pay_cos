@@ -42,7 +42,8 @@
     </div>
     <div>
       <div class="operator">
-        <a-button type="primary" ghost @click="add">新增</a-button>
+<!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
+        <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
@@ -66,7 +67,6 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="cloud" @click="handlerecordViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
-          <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
@@ -125,7 +125,7 @@ export default {
     }),
     columns () {
       return [{
-        title: '学好',
+        title: '学号',
         dataIndex: 'studentCode'
       }, {
         title: '学生姓名',
@@ -134,12 +134,12 @@ export default {
         title: '学生照片',
         dataIndex: 'studentImages',
         customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="record" />
+          if (!record.studentImages) return <a-avatar shape="square" icon="record" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
             </template>
-            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
           </a-popover>
         }
       }, {
