@@ -1,5 +1,6 @@
 package cc.mrbird.febs.manage.service;
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.manage.entity.StudentInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,4 +22,13 @@ public interface IStudentInfoService extends IService<StudentInfo> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectStudentPage(Page<StudentInfo> page, StudentInfo studentInfo);
+
+    /**
+     * 校验学号是否重复
+     *
+     * @param code 学号
+     * @param id   ID
+     * @return 结果
+     */
+    boolean checkCode(String code, Integer id) throws FebsException;
 }

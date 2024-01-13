@@ -1,10 +1,12 @@
 package cc.mrbird.febs.manage.controller;
 
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.StudentInfo;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,13 +59,28 @@ public class StudentInfoController {
     }
 
     /**
+     * 根据班级ID获取学生信息
+     *
+     * @param classId 班级ID
+     * @return 结果
+     */
+    @GetMapping("/selectStudentByClass/{classId}")
+    public R selectStudentByClass(@PathVariable("classId") Integer classId) {
+        return R.ok(studentInfoService.list(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getClassId, classId)));
+    }
+
+    /**
      * 新增学生信息
      *
      * @param studentInfo 学生信息
      * @return 结果
      */
     @PostMapping
-    public R save(StudentInfo studentInfo) {
+    public R save(StudentInfo studentInfo) throws FebsException {
+        boolean check = studentInfoService.checkCode(studentInfo.getCode(), null);
+        if (check) {
+            throw new FebsException("学号不能为空");
+        }
         studentInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(studentInfoService.save(studentInfo));
     }
@@ -75,7 +92,11 @@ public class StudentInfoController {
      * @return 结果
      */
     @PutMapping
-    public R edit(StudentInfo studentInfo) {
+    public R edit(StudentInfo studentInfo) throws FebsException {
+        boolean check = studentInfoService.checkCode(studentInfo.getCode(), null);
+        if (check) {
+            throw new FebsException("学号不能为空");
+        }
         return R.ok(studentInfoService.updateById(studentInfo));
     }
 
