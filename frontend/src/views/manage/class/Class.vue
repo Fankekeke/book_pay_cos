@@ -28,7 +28,7 @@
           </span>
         </a-row>
       </a-form>
-    </div>
+    </div> 
     <div>
       <div class="operator">
         <a-button type="primary" ghost @click="add">新增</a-button>

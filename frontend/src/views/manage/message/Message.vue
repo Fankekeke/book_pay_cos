@@ -65,7 +65,7 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="cloud" @click="handlemessageViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
-          <a-icon v-if="record.status == 0" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="editStatus(record)" title="修 改" style="margin-right: 10px"></a-icon>
+          <a-icon v-if="record.status == 0" type="tag" theme="twoTone" twoToneColor="#4a9ff5" @click="editStatus(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
