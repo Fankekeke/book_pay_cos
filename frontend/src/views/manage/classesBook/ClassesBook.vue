@@ -15,21 +15,10 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="学生名称"
+                label="班级名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.studentName"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="支付状态"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-select v-model="queryParams.status" allowClear>
-                  <a-select-option value="0">未缴纳</a-select-option>
-                  <a-select-option value="1">已缴纳</a-select-option>
-                </a-select>
+                <a-input v-model="queryParams.className"/>
               </a-form-item>
             </a-col>
           </div>
@@ -125,44 +114,57 @@ export default {
     }),
     columns () {
       return [{
-        title: '学号',
-        dataIndex: 'studentCode'
+        title: '班级编号',
+        dataIndex: 'code'
       }, {
-        title: '学生姓名',
-        dataIndex: 'studentName'
-      }, {
-        title: '学生照片',
-        dataIndex: 'studentImages',
-        customRender: (text, record, index) => {
-          if (!record.studentImages) return <a-avatar shape="square" icon="record" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
-          </a-popover>
-        }
+        title: '班级名称',
+        dataIndex: 'className'
       }, {
         title: '图书名称',
         dataIndex: 'bookName'
       }, {
-        title: '作者',
-        dataIndex: 'auther'
-      }, {
-        title: '缴费状态',
-        dataIndex: 'status',
+        title: '图书类型',
+        dataIndex: 'type',
         customRender: (text, row, index) => {
           switch (text) {
-            case '0':
-              return <a-tag color="red">未缴费</a-tag>
             case '1':
-              return <a-tag color="green">已缴费</a-tag>
+              return <a-tag>医疗</a-tag>
+            case '2':
+              return <a-tag>科技</a-tag>
+            case '3':
+              return <a-tag>历史</a-tag>
+            case '4':
+              return <a-tag>烹饪</a-tag>
+            case '5':
+              return <a-tag>高数</a-tag>
+            case '6':
+              return <a-tag>小说</a-tag>
+            case '7':
+              return <a-tag>诗词</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '缴纳金额',
+        title: '图片',
+        dataIndex: 'images',
+        customRender: (text, record, index) => {
+          if (!record.images) return <a-avatar shape="square" icon="record" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            </template>
+            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+          </a-popover>
+        }
+      }, {
+        title: '授课老师',
+        dataIndex: 'instructor'
+      }, {
+        title: '辅导员',
+        dataIndex: 'counselor'
+      }, {
+        title: '价格',
         dataIndex: 'price',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -243,7 +245,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/pay-record/' + ids).then(() => {
+          that.$delete('/cos/class-bind-book-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -316,7 +318,7 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      this.$get('/cos/pay-record/page', {
+      this.$get('/cos/class-bind-book-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

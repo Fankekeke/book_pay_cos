@@ -25,6 +25,6 @@ public class ClassBindBookInfoServiceImpl extends ServiceImpl<ClassBindBookInfoM
      */
     @Override
     public IPage<LinkedHashMap<String, Object>> selectPage(Page<ClassBindBookInfo> page, ClassBindBookInfo classBindBookInfo) {
-        return baseMapper.selectPage(page, classBindBookInfo);
+        return baseMapper.selectBindPage(page, classBindBookInfo);
     }
 }

@@ -10,8 +10,11 @@
             cbbi.book_id,
             cbbi.create_date,
             bi.book_name,
+            bi.price,
             bi.images,
             bi.type,
+            ci.code,
+            ci.instructor,
             ci.class_name,
             ci.counselor
         FROM
