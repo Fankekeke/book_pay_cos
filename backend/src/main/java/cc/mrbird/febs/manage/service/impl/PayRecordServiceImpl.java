@@ -3,13 +3,12 @@ package cc.mrbird.febs.manage.service.impl;
 import cc.mrbird.febs.manage.dao.BookInfoMapper;
 import cc.mrbird.febs.manage.dao.ClassInfoMapper;
 import cc.mrbird.febs.manage.dao.StudentInfoMapper;
-import cc.mrbird.febs.manage.entity.BookInfo;
-import cc.mrbird.febs.manage.entity.ClassInfo;
-import cc.mrbird.febs.manage.entity.PayRecord;
+import cc.mrbird.febs.manage.entity.*;
 import cc.mrbird.febs.manage.dao.PayRecordMapper;
-import cc.mrbird.febs.manage.entity.StudentInfo;
+import cc.mrbird.febs.manage.service.IBulletinInfoService;
 import cc.mrbird.febs.manage.service.IPayRecordService;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -32,6 +33,8 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
     private final ClassInfoMapper classInfoMapper;
 
     private final BookInfoMapper bookInfoMapper;
+
+    private final IBulletinInfoService bulletinInfoService;
 
     /**
      * 分页获取支付记录信息
@@ -88,5 +91,46 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         // 更新缴费状态
         payRecord.setStatus("1");
         this.updateById(payRecord);
+    }
+
+    /**
+     * 主页数据
+     *
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> homeData() {
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        // 总缴费数量
+        result.put("orderCode", this.count());
+        // 总收益
+        result.put("orderPrice", baseMapper.selectOrderPrice());
+        // 学生数量
+        result.put("pharmacyNum", studentInfoMapper.selectCount(Wrappers.<StudentInfo>lambdaQuery()));
+        // 图书数量
+        result.put("staffNum", bookInfoMapper.selectCount(Wrappers.<BookInfo>lambdaQuery()));
+
+        // 本月订单数量
+        List<PayRecord> orderList = baseMapper.selectOrderByMonth();
+        result.put("monthOrderNum", CollectionUtil.isEmpty(orderList) ? 0 : orderList.size());
+        BigDecimal orderPrice = orderList.stream().map(PayRecord::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        // 获取本月收益
+        result.put("monthOrderPrice", orderPrice);
+
+        // 本年订单数量
+        List<PayRecord> orderYearList = baseMapper.selectOrderByYear();
+        result.put("yearOrderNum", CollectionUtil.isEmpty(orderYearList) ? 0 : orderYearList.size());
+        // 本年总收益
+        BigDecimal orderYearPrice = orderYearList.stream().map(PayRecord::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        result.put("yearOrderPrice", orderYearPrice);
+
+        // 公告信息
+        result.put("bulletin", bulletinInfoService.list(Wrappers.<BulletinInfo>lambdaQuery().eq(BulletinInfo::getRackUp, 1)));
+
+        // 近十天内订单统计
+        result.put("orderNumWithinDays", baseMapper.selectOrderNumWithinDays(null));
+        // 近十天内收益统计
+        result.put("orderPriceWithinDays", baseMapper.selectOrderPriceWithinDays(null));
+        return result;
     }
 }

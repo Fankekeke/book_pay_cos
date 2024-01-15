@@ -48,6 +48,16 @@ public class PayRecordController {
     }
 
     /**
+     * 统计数据
+     *
+     * @return 结果
+     */
+    @GetMapping("/home/data")
+    public R selectHomeData() {
+        return R.ok(payRecordService.homeData());
+    }
+
+    /**
      * 获取支付记录详情
      *
      * @param id 支付记录ID

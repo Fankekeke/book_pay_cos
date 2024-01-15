@@ -36,4 +36,11 @@ public interface IPayRecordService extends IService<PayRecord> {
      * @param orderCode 订单编号
      */
     void orderPaymentPlatform(String orderCode);
+
+    /**
+     * 主页数据
+     *
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> homeData();
 }
