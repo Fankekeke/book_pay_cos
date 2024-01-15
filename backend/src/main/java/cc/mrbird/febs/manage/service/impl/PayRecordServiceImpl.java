@@ -11,6 +11,7 @@ import cc.mrbird.febs.manage.entity.StudentInfo;
 import cc.mrbird.febs.manage.service.IPayRecordService;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -74,5 +75,18 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         ClassInfo classInfo = classInfoMapper.selectById(studentInfo.getClassId());
         result.put("class", classInfo);
         return result;
+    }
+
+    /**
+     * 订单付款
+     *
+     * @param orderCode 订单编号
+     */
+    @Override
+    public void orderPaymentPlatform(String orderCode) {
+        PayRecord payRecord = this.getOne(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getCode, orderCode));
+        // 更新缴费状态
+        payRecord.setStatus("1");
+        this.updateById(payRecord);
     }
 }

@@ -15,13 +15,18 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="支付状态"
+                label="作者"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-select v-model="queryParams.status" allowClear>
-                  <a-select-option value="0">未缴纳</a-select-option>
-                  <a-select-option value="1">已缴纳</a-select-option>
-                </a-select>
+                <a-input v-model="queryParams.auther"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item
+                label="关键字"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}">
+                <a-input v-model="queryParams.keyWord"/>
               </a-form-item>
             </a-col>
           </div>
@@ -35,7 +40,7 @@
     <div>
       <div class="operator">
 <!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
-        <a-button @click="batchDelete">删除</a-button>
+<!--        <a-button @click="batchDelete">删除</a-button>-->
       </div>
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
@@ -58,38 +63,39 @@
           </template>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="cloud" @click="handlerecordViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon type="cloud" @click="handlebookViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
-    <record-view
-      @close="handlerecordViewClose"
-      :recordShow="recordView.visiable"
-      :recordData="recordView.data">
-    </record-view>
+    <book-view
+      @close="handlebookViewClose"
+      :bookShow="bookView.visiable"
+      :bookData="bookView.data">
+    </book-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import recordView from './RecordView.vue'
+import bookView from './BookView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'record',
-  components: {RangeDate, recordView},
+  name: 'book',
+  components: {RangeDate, bookView},
   data () {
     return {
       advanced: false,
-      recordAdd: {
+      bookAdd: {
         visiable: false
       },
-      recordEdit: {
+      bookEdit: {
         visiable: false
       },
-      recordView: {
+      bookView: {
         visiable: false,
         data: null
       },
@@ -108,7 +114,7 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      recordList: []
+      bookList: []
     }
   },
   computed: {
@@ -117,52 +123,55 @@ export default {
     }),
     columns () {
       return [{
-        title: '学号',
-        dataIndex: 'studentCode'
-      }, {
-        title: '学生姓名',
-        dataIndex: 'studentName'
-      }, {
-        title: '学生照片',
-        dataIndex: 'studentImages',
-        customRender: (text, record, index) => {
-          if (!record.studentImages) return <a-avatar shape="square" icon="record" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
-          </a-popover>
-        }
-      }, {
         title: '图书名称',
         dataIndex: 'bookName'
       }, {
-        title: '作者',
-        dataIndex: 'auther'
+        title: '图书编号',
+        dataIndex: 'code'
       }, {
-        title: '缴费状态',
-        dataIndex: 'status',
+        title: '图书类型',
+        dataIndex: 'type',
         customRender: (text, row, index) => {
           switch (text) {
-            case '0':
-              return <a-tag color="red">未缴费</a-tag>
             case '1':
-              return <a-tag color="green">已缴费</a-tag>
+              return <a-tag>医疗</a-tag>
+            case '2':
+              return <a-tag>科技</a-tag>
+            case '3':
+              return <a-tag>历史</a-tag>
+            case '4':
+              return <a-tag>烹饪</a-tag>
+            case '5':
+              return <a-tag>高数</a-tag>
+            case '6':
+              return <a-tag>小说</a-tag>
+            case '7':
+              return <a-tag>诗词</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '缴纳金额',
-        dataIndex: 'price',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '元'
-          } else {
-            return '- -'
-          }
+        title: '图片',
+        dataIndex: 'images',
+        customRender: (text, record, index) => {
+          if (!record.images) return <a-avatar shape="square" icon="book" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            </template>
+            <a-avatar shape="square" icon="book" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+          </a-popover>
         }
+      }, {
+        title: '出版社',
+        dataIndex: 'press'
+      }, {
+        title: '价格',
+        dataIndex: 'price'
+      }, {
+        title: '关键词',
+        dataIndex: 'keyWord'
       }, {
         title: '创建时间',
         dataIndex: 'createDate',
@@ -184,12 +193,12 @@ export default {
     this.fetch()
   },
   methods: {
-    handlerecordViewOpen (row) {
-      this.recordView.data = row
-      this.recordView.visiable = true
+    handlebookViewOpen (row) {
+      this.bookView.data = row
+      this.bookView.visiable = true
     },
-    handlerecordViewClose () {
-      this.recordView.visiable = false
+    handlebookViewClose () {
+      this.bookView.visiable = false
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -198,26 +207,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.recordAdd.visiable = true
+      this.bookAdd.visiable = true
     },
-    handlerecordAddClose () {
-      this.recordAdd.visiable = false
+    handlebookAddClose () {
+      this.bookAdd.visiable = false
     },
-    handlerecordAddSuccess () {
-      this.recordAdd.visiable = false
-      this.$message.success('新增记录成功')
+    handlebookAddSuccess () {
+      this.bookAdd.visiable = false
+      this.$message.success('新增图书成功')
       this.search()
     },
     edit (record) {
-      this.$refs.recordEdit.setFormValues(record)
-      this.recordEdit.visiable = true
+      this.$refs.bookEdit.setFormValues(record)
+      this.bookEdit.visiable = true
     },
-    handlerecordEditClose () {
-      this.recordEdit.visiable = false
+    handlebookEditClose () {
+      this.bookEdit.visiable = false
     },
-    handlerecordEditSuccess () {
-      this.recordEdit.visiable = false
-      this.$message.success('修改记录成功')
+    handlebookEditSuccess () {
+      this.bookEdit.visiable = false
+      this.$message.success('修改图书成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -305,12 +314,10 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      if (params.status === undefined) {
-        delete params.status
+      if (params.type === undefined) {
+        delete params.type
       }
-      params.studentId = this.currentUser.userId
-      params.status = 1
-      this.$get('/cos/pay-record/page', {
+      this.$get('/cos/book-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

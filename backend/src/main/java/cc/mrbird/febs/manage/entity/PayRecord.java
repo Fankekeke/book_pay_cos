@@ -30,6 +30,11 @@ public class PayRecord implements Serializable {
     private Integer id;
 
     /**
+     * 缴费单号
+     */
+    private String code;
+
+    /**
      * 学生ID
      */
     private Integer studentId;

@@ -36,6 +36,18 @@ public class PayRecordController {
     }
 
     /**
+     * 订单付款
+     *
+     * @param orderCode 订单编号
+     * @return 结果
+     */
+    @GetMapping("/payment")
+    public R orderPaymentPlatform(@RequestParam("orderCode") String orderCode) {
+        payRecordService.orderPaymentPlatform(orderCode);
+        return R.ok(true);
+    }
+
+    /**
      * 获取支付记录详情
      *
      * @param id 支付记录ID

@@ -29,4 +29,11 @@ public interface IPayRecordService extends IService<PayRecord> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectRecordDetail(Integer id);
+
+    /**
+     * 订单付款
+     *
+     * @param orderCode 订单编号
+     */
+    void orderPaymentPlatform(String orderCode);
 }
