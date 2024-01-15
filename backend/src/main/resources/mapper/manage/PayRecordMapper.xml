@@ -32,7 +32,10 @@
             AND si.student_name LIKE CONCAT('%',#{payRecord.studentName},'%')
         </if>
         <if test="payRecord.status != null and payRecord.status != ''">
-            AND si.status = #{payRecord.status}
+            AND pr.status = #{payRecord.status}
+        </if>
+        <if test="payRecord.studentId != null and payRecord.studentId != ''">
+            AND si.user_id = #{payRecord.studentId}
         </if>
         order by
         pr.create_date desc

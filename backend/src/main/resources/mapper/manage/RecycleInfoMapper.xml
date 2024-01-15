@@ -32,6 +32,12 @@
         <if test="recycleInfo.bookName != null and recycleInfo.bookName != ''">
             AND bi.book_name LIKE CONCAT('%',#{recycleInfo.bookName},'%')
         </if>
+        <if test="recycleInfo.recucleType != null and recycleInfo.recucleType != ''">
+            AND ri.recucle_type = #{recycleInfo.recucleType}
+        </if>
+        <if test="recycleInfo.studentId != null and recycleInfo.studentId != ''">
+            AND si.user_id = #{recycleInfo.studentId}
+        </if>
         order by
         ri.create_date desc
     </select>

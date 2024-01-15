@@ -7,18 +7,21 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="订单编号"
+                label="图书名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.orderCode"/>
+                <a-input v-model="queryParams.bookName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="客户名称"
+                label="支付状态"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.userName"/>
+                <a-select v-model="queryParams.status" allowClear>
+                  <a-select-option value="0">未缴纳</a-select-option>
+                  <a-select-option value="1">已缴纳</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </div>
@@ -31,6 +34,7 @@
     </div>
     <div>
       <div class="operator">
+<!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -53,28 +57,41 @@
             </a-tooltip>
           </template>
         </template>
+        <template slot="operation" slot-scope="text, record">
+          <a-icon type="cloud" @click="handlerecordViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+        </template>
       </a-table>
     </div>
+    <record-view
+      @close="handlerecordViewClose"
+      :recordShow="recordView.visiable"
+      :recordData="recordView.data">
+    </record-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
+import recordView from './RecordView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'payment',
-  components: {RangeDate},
+  name: 'record',
+  components: {RangeDate, recordView},
   data () {
     return {
       advanced: false,
-      paymentAdd: {
+      recordAdd: {
         visiable: false
       },
-      paymentEdit: {
+      recordEdit: {
         visiable: false
+      },
+      recordView: {
+        visiable: false,
+        data: null
       },
       queryParams: {},
       filteredInfo: null,
@@ -91,7 +108,7 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      userList: []
+      recordList: []
     }
   },
   computed: {
@@ -100,31 +117,45 @@ export default {
     }),
     columns () {
       return [{
-        title: '订单编号',
-        dataIndex: 'orderCode'
+        title: '学号',
+        dataIndex: 'studentCode'
       }, {
-        title: '客户名称',
-        dataIndex: 'userName',
+        title: '学生姓名',
+        dataIndex: 'studentName'
+      }, {
+        title: '学生照片',
+        dataIndex: 'studentImages',
+        customRender: (text, record, index) => {
+          if (!record.studentImages) return <a-avatar shape="square" icon="record" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
+            </template>
+            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
+          </a-popover>
+        }
+      }, {
+        title: '图书名称',
+        dataIndex: 'bookName'
+      }, {
+        title: '作者',
+        dataIndex: 'auther'
+      }, {
+        title: '缴费状态',
+        dataIndex: 'status',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return <a-tag>平台内下单</a-tag>
+          switch (text) {
+            case '0':
+              return <a-tag color="red">未缴费</a-tag>
+            case '1':
+              return <a-tag color="green">已缴费</a-tag>
+            default:
+              return '- -'
           }
         }
       }, {
-        title: '联系方式',
-        dataIndex: 'phone',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '缴费金额',
-        dataIndex: 'money',
+        title: '缴纳金额',
+        dataIndex: 'price',
         customRender: (text, row, index) => {
           if (text !== null) {
             return text + '元'
@@ -133,39 +164,7 @@ export default {
           }
         }
       }, {
-        title: '药店名称',
-        dataIndex: 'pharmacyName',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '药店图片',
-        dataIndex: 'images',
-        customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="user" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-          </a-popover>
-        }
-      }, {
-        title: '药店地址',
-        dataIndex: 'address',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '缴费时间',
+        title: '创建时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -174,6 +173,10 @@ export default {
             return '- -'
           }
         }
+      }, {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: {customRender: 'operation'}
       }]
     }
   },
@@ -181,6 +184,13 @@ export default {
     this.fetch()
   },
   methods: {
+    handlerecordViewOpen (row) {
+      this.recordView.data = row
+      this.recordView.visiable = true
+    },
+    handlerecordViewClose () {
+      this.recordView.visiable = false
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -188,26 +198,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.paymentAdd.visiable = true
+      this.recordAdd.visiable = true
     },
-    handlepaymentAddClose () {
-      this.paymentAdd.visiable = false
+    handlerecordAddClose () {
+      this.recordAdd.visiable = false
     },
-    handlepaymentAddSuccess () {
-      this.paymentAdd.visiable = false
-      this.$message.success('新增产品成功')
+    handlerecordAddSuccess () {
+      this.recordAdd.visiable = false
+      this.$message.success('新增记录成功')
       this.search()
     },
     edit (record) {
-      this.$refs.paymentEdit.setFormValues(record)
-      this.paymentEdit.visiable = true
+      this.$refs.recordEdit.setFormValues(record)
+      this.recordEdit.visiable = true
     },
-    handlepaymentEditClose () {
-      this.paymentEdit.visiable = false
+    handlerecordEditClose () {
+      this.recordEdit.visiable = false
     },
-    handlepaymentEditSuccess () {
-      this.paymentEdit.visiable = false
-      this.$message.success('修改产品成功')
+    handlerecordEditSuccess () {
+      this.recordEdit.visiable = false
+      this.$message.success('修改记录成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -225,7 +235,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/payment-record/' + ids).then(() => {
+          that.$delete('/cos/pay-record/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -295,11 +305,11 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      if (params.type === undefined) {
-        delete params.type
+      if (params.status === undefined) {
+        delete params.status
       }
-      params.userId = this.currentUser.userId
-      this.$get('/cos/payment-record/page', {
+      params.studentId = this.currentUser.userId
+      this.$get('/cos/pay-record/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

@@ -4,35 +4,7 @@
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <a-row :gutter="15">
-          <div :class="advanced ? null: 'fold'">
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="图书名称"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.bookName"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="学生名称"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.studentName"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="支付状态"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-select v-model="queryParams.status" allowClear>
-                  <a-select-option value="0">未缴纳</a-select-option>
-                  <a-select-option value="1">已缴纳</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </div>
+          <div :class="advanced ? null: 'fold'"></div>
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary" @click="search">查询</a-button>
             <a-button style="margin-left: 8px" @click="reset">重置</a-button>
@@ -43,7 +15,6 @@
     <div>
       <div class="operator">
 <!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
-        <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
@@ -65,39 +36,50 @@
             </a-tooltip>
           </template>
         </template>
+        <template slot="contentShow" slot-scope="text, record">
+          <template>
+            <a-tooltip>
+              <template slot="title">
+                {{ record.content }}
+              </template>
+              {{ record.content.slice(0, 30) }} ...
+            </a-tooltip>
+          </template>
+        </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="cloud" @click="handlerecordViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon type="cloud" @click="handlemessageViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon v-if="record.status == 0" type="tag" theme="twoTone" twoToneColor="#4a9ff5" @click="editStatus(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
-    <record-view
-      @close="handlerecordViewClose"
-      :recordShow="recordView.visiable"
-      :recordData="recordView.data">
-    </record-view>
+    <message-view
+      @close="handlemessageViewClose"
+      :messageShow="messageView.visiable"
+      :messageData="messageView.data">
+    </message-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import recordView from './RecordView.vue'
+import messageView from './MessageView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'record',
-  components: {RangeDate, recordView},
+  name: 'message',
+  components: {RangeDate, messageView},
   data () {
     return {
       advanced: false,
-      recordAdd: {
+      messageAdd: {
         visiable: false
       },
-      recordEdit: {
+      messageEdit: {
         visiable: false
       },
-      recordView: {
+      messageView: {
         visiable: false,
         data: null
       },
@@ -116,7 +98,7 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      recordList: []
+      messageList: []
     }
   },
   computed: {
@@ -125,54 +107,42 @@ export default {
     }),
     columns () {
       return [{
-        title: '学号',
-        dataIndex: 'studentCode'
-      }, {
         title: '学生姓名',
         dataIndex: 'studentName'
       }, {
+        title: '学号',
+        dataIndex: 'code'
+      }, {
         title: '学生照片',
-        dataIndex: 'studentImages',
+        dataIndex: 'images',
         customRender: (text, record, index) => {
-          if (!record.studentImages) return <a-avatar shape="square" icon="record" />
+          if (!record.images) return <a-avatar shape="square" icon="message" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
+              <a-avatar shape="square" size={132} icon="message" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
             </template>
-            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.studentImages.split(',')[0] } />
+            <a-avatar shape="square" icon="message" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
           </a-popover>
         }
       }, {
-        title: '图书名称',
-        dataIndex: 'bookName'
-      }, {
-        title: '作者',
-        dataIndex: 'auther'
-      }, {
-        title: '缴费状态',
+        title: '状态',
         dataIndex: 'status',
         customRender: (text, row, index) => {
           switch (text) {
             case '0':
-              return <a-tag color="red">未缴费</a-tag>
+              return <a-tag>未读</a-tag>
             case '1':
-              return <a-tag color="green">已缴费</a-tag>
+              return <a-tag>已读</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '缴纳金额',
-        dataIndex: 'price',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text + '元'
-          } else {
-            return '- -'
-          }
-        }
+        title: '内容',
+        dataIndex: 'content',
+        scopedSlots: { customRender: 'contentShow' }
       }, {
-        title: '创建时间',
+        title: '发送时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -192,12 +162,19 @@ export default {
     this.fetch()
   },
   methods: {
-    handlerecordViewOpen (row) {
-      this.recordView.data = row
-      this.recordView.visiable = true
+    editStatus (record) {
+      record.status = '1'
+      this.$put('/cos/book-info', record).then((r) => {
+        this.$message.success('更新状态成功')
+        this.fetch()
+      })
     },
-    handlerecordViewClose () {
-      this.recordView.visiable = false
+    handlemessageViewOpen (row) {
+      this.messageView.data = row
+      this.messageView.visiable = true
+    },
+    handlemessageViewClose () {
+      this.messageView.visiable = false
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -206,26 +183,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.recordAdd.visiable = true
+      this.messageAdd.visiable = true
     },
-    handlerecordAddClose () {
-      this.recordAdd.visiable = false
+    handlemessageAddClose () {
+      this.messageAdd.visiable = false
     },
-    handlerecordAddSuccess () {
-      this.recordAdd.visiable = false
-      this.$message.success('新增记录成功')
+    handlemessageAddSuccess () {
+      this.messageAdd.visiable = false
+      this.$message.success('新增消息成功')
       this.search()
     },
     edit (record) {
-      this.$refs.recordEdit.setFormValues(record)
-      this.recordEdit.visiable = true
+      this.$refs.messageEdit.setFormValues(record)
+      this.messageEdit.visiable = true
     },
-    handlerecordEditClose () {
-      this.recordEdit.visiable = false
+    handlemessageEditClose () {
+      this.messageEdit.visiable = false
     },
-    handlerecordEditSuccess () {
-      this.recordEdit.visiable = false
-      this.$message.success('修改记录成功')
+    handlemessageEditSuccess () {
+      this.messageEdit.visiable = false
+      this.$message.success('修改消息成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -243,7 +220,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/pay-record/' + ids).then(() => {
+          that.$delete('/cos/message-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -313,10 +290,11 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      if (params.status === undefined) {
-        delete params.status
+      if (params.type === undefined) {
+        delete params.type
       }
-      this.$get('/cos/pay-record/page', {
+      params.studentId = this.currentUser.userId
+      this.$get('/cos/message-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

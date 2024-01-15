@@ -26,6 +26,9 @@
         <if test="messageInfo.code != null and messageInfo.code != ''">
             AND si.code LIKE CONCAT('%',#{messageInfo.code},'%')
         </if>
+        <if test="messageInfo.studentId != null and messageInfo.studentId != ''">
+            AND si.user_id = #{messageInfo.studentId}
+        </if>
         order by
         mi.create_date desc
     </select>

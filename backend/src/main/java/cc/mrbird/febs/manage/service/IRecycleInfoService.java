@@ -21,4 +21,12 @@ public interface IRecycleInfoService extends IService<RecycleInfo> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectRecyclePage(Page<RecycleInfo> page, RecycleInfo recycleInfo);
+
+    /**
+     * 获取图书回收详情
+     *
+     * @param id 图书回收ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> recycleDetail(Integer id);
 }

@@ -21,17 +21,6 @@
                 <a-input v-model="queryParams.studentName"/>
               </a-form-item>
             </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
-                label="支付状态"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-select v-model="queryParams.status" allowClear>
-                  <a-select-option value="0">未缴纳</a-select-option>
-                  <a-select-option value="1">已缴纳</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary" @click="search">查询</a-button>
@@ -81,7 +70,7 @@
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import recordView from './RecordView.vue'
+import recordView from './DonateView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
@@ -126,7 +115,7 @@ export default {
     columns () {
       return [{
         title: '学号',
-        dataIndex: 'studentCode'
+        dataIndex: 'code'
       }, {
         title: '学生姓名',
         dataIndex: 'studentName'
@@ -149,24 +138,46 @@ export default {
         title: '作者',
         dataIndex: 'auther'
       }, {
-        title: '缴费状态',
-        dataIndex: 'status',
+        title: '图片',
+        dataIndex: 'images',
+        customRender: (text, record, index) => {
+          if (!record.images) return <a-avatar shape="square" icon="record" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+            </template>
+            <a-avatar shape="square" icon="record" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
+          </a-popover>
+        }
+      }, {
+        title: '图书类型',
+        dataIndex: 'type',
         customRender: (text, row, index) => {
           switch (text) {
-            case '0':
-              return <a-tag color="red">未缴费</a-tag>
             case '1':
-              return <a-tag color="green">已缴费</a-tag>
+              return <a-tag>医疗</a-tag>
+            case '2':
+              return <a-tag>科技</a-tag>
+            case '3':
+              return <a-tag>历史</a-tag>
+            case '4':
+              return <a-tag>烹饪</a-tag>
+            case '5':
+              return <a-tag>高数</a-tag>
+            case '6':
+              return <a-tag>小说</a-tag>
+            case '7':
+              return <a-tag>诗词</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '缴纳金额',
-        dataIndex: 'price',
+        title: '捐赠地址',
+        dataIndex: 'address',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text + '元'
+            return text
           } else {
             return '- -'
           }
@@ -243,7 +254,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/pay-record/' + ids).then(() => {
+          that.$delete('/cos/recycle-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -313,10 +324,11 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      if (params.status === undefined) {
-        delete params.status
+      params.recucleType = 1
+      if (params.type === undefined) {
+        delete params.type
       }
-      this.$get('/cos/pay-record/page', {
+      this.$get('/cos/recycle-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

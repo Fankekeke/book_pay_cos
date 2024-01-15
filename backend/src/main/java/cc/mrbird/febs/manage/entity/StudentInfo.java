@@ -94,6 +94,11 @@ public class StudentInfo implements Serializable {
      */
     private String major;
 
+    /**
+     * 所属账户
+     */
+    private Integer userId;
+
     @TableField(exist = false)
     private String className;
 }

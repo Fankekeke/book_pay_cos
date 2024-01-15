@@ -38,6 +38,28 @@ public class StudentInfoController {
     }
 
     /**
+     * 根据学生获取已缴费图书
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/book/list/{userId}")
+    public R selectBookByStudent(@PathVariable("userId") Integer userId) {
+        return R.ok(studentInfoService.selectBookByStudentId(userId));
+    }
+
+    /**
+     * 根据学生获取可用图书
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/use/book/list/{userId}")
+    public R selectUseBookByStudent(@PathVariable("userId") Integer userId) {
+        return R.ok(studentInfoService.selectUseBookByStudent(userId));
+    }
+
+    /**
      * 获取学生详情
      *
      * @param id 学生ID

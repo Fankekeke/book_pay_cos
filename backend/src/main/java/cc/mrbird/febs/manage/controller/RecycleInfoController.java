@@ -47,6 +47,17 @@ public class RecycleInfoController {
     }
 
     /**
+     * 获取图书回收详情
+     *
+     * @param id 图书回收ID
+     * @return 结果
+     */
+    @GetMapping("/recycleDetail/{id}")
+    public R recycleDetail(@PathVariable("id") Integer id) {
+        return R.ok(recycleInfoService.recycleDetail(id));
+    }
+
+    /**
      * 获取图书回收列表
      *
      * @return 结果
