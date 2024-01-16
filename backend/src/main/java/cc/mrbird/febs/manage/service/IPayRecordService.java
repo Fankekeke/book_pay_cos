@@ -1,5 +1,6 @@
 package cc.mrbird.febs.manage.service;
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.manage.entity.PayRecord;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -29,6 +30,22 @@ public interface IPayRecordService extends IService<PayRecord> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectRecordDetail(Integer id);
+
+    /**
+     * 添加班级图书绑定后处理
+     *
+     * @param classId 班级ID
+     * @param bookId  图书ID
+     */
+    void addClassBind(Integer classId, Integer bookId) throws FebsException;
+
+    /**
+     * 添加学生图书绑定后处理
+     *
+     * @param studentId 学生ID
+     * @param classId   班级ID
+     */
+    void addStudentBind(Integer studentId, Integer classId);
 
     /**
      * 订单付款

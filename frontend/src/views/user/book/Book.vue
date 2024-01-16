@@ -317,7 +317,9 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      this.$get('/cos/book-info/page', {
+      params.studentId = this.currentUser.userId
+      params.status = 0
+      this.$get('/cos/pay-record/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

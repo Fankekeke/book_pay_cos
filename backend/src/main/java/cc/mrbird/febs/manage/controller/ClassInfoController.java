@@ -4,6 +4,7 @@ package cc.mrbird.febs.manage.controller;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.ClassInfo;
 import cc.mrbird.febs.manage.service.IClassInfoService;
+import cc.mrbird.febs.manage.service.IPayRecordService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,11 @@
 package cc.mrbird.febs.manage.controller;
 
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.ClassBindBookInfo;
 import cc.mrbird.febs.manage.service.IClassBindBookInfoService;
+import cc.mrbird.febs.manage.service.IPayRecordService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ import java.util.List;
 public class ClassBindBookInfoController {
 
     private final IClassBindBookInfoService classBindBookInfoService;
+
+    private final IPayRecordService payRecordService;
 
     /**
      * 分页获取班级绑定图书信息
@@ -63,8 +67,9 @@ public class ClassBindBookInfoController {
      * @return 结果
      */
     @PostMapping
-    public R save(ClassBindBookInfo classBindBookInfo) {
+    public R save(ClassBindBookInfo classBindBookInfo) throws FebsException {
         classBindBookInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        payRecordService.addClassBind(classBindBookInfo.getClassId(), classBindBookInfo.getBookId());
         return R.ok(classBindBookInfoService.save(classBindBookInfo));
     }
 

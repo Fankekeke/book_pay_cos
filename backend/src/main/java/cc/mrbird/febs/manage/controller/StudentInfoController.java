@@ -4,6 +4,7 @@ package cc.mrbird.febs.manage.controller;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.StudentInfo;
+import cc.mrbird.febs.manage.service.IPayRecordService;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -25,6 +26,7 @@ public class StudentInfoController {
 
     private final IStudentInfoService studentInfoService;
 
+    private final IPayRecordService payRecordService;
     /**
      * 分页获取学生信息
      *
@@ -104,7 +106,10 @@ public class StudentInfoController {
             throw new FebsException("学号不能为空");
         }
         studentInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        return R.ok(studentInfoService.save(studentInfo));
+        boolean result = studentInfoService.save(studentInfo);
+
+        payRecordService.addStudentBind(studentInfo.getId(), studentInfo.getClassId());
+        return R.ok(result);
     }
 
     /**
