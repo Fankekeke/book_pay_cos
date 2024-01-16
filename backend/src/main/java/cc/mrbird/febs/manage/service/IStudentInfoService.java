@@ -49,4 +49,12 @@ public interface IStudentInfoService extends IService<StudentInfo> {
      * @return 结果
      */
     List<BookInfo> selectUseBookByStudent(Integer userId);
+
+    /**
+     * 获取学生详情
+     *
+     * @param userId 学生ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectBookDetail(Integer userId);
 }

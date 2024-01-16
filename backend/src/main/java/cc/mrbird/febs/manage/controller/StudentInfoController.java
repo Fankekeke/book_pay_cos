@@ -73,6 +73,17 @@ public class StudentInfoController {
     }
 
     /**
+     * 获取学生详情
+     *
+     * @param userId 学生ID
+     * @return 结果
+     */
+    @GetMapping("/detail/{id}")
+    public R selectBookDetail(@PathVariable("id") Integer userId) {
+        return R.ok(studentInfoService.selectBookDetail(userId));
+    }
+
+    /**
      * 获取学生列表
      *
      * @return 结果

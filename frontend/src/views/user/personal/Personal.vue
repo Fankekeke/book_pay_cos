@@ -1,6 +1,6 @@
 <template>
   <a-row :gutter="8" style="width: 100%">
-    <a-col :span="6">
+    <a-col :span="8">
       <div style="background:#ECECEC; padding:30px;margin-top: 30px">
         <a-card :bordered="false">
           <b style="font-size: 15px">我的信息</b>
@@ -128,7 +128,7 @@
         </a-card>
       </div>
     </a-col>
-    <a-col :span="18">
+    <a-col :span="16">
       <div style="background:#ECECEC; padding:30px;margin-top: 30px">
         <a-card :bordered="false">
           <a-spin :spinning="dataLoading">
@@ -169,7 +169,10 @@ export default {
       loading: false,
       courseInfo: [],
       dataLoading: false,
-      classList: []
+      classList: [],
+      fileList: [],
+      previewVisible: false,
+      previewImage: ''
     }
   },
   mounted () {
@@ -178,6 +181,19 @@ export default {
   },
   methods: {
     moment,
+    handleCancel () {
+      this.previewVisible = false
+    },
+    async handlePreview (file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj)
+      }
+      this.previewImage = file.url || file.preview
+      this.previewVisible = true
+    },
+    picHandleChange ({ fileList }) {
+      this.fileList = fileList
+    },
     selectClassList () {
       this.$get('/cos/class-info/list').then((r) => {
         this.classList = r.data.data
@@ -203,7 +219,7 @@ export default {
     },
     dataInit () {
       this.dataLoading = true
-      this.$get(`/cos/user-info/detail/${this.currentUser.userId}`).then((r) => {
+      this.$get(`/cos/student-info/detail/${this.currentUser.userId}`).then((r) => {
         this.rowId = r.data.user.id
         this.setFormValues(r.data.user)
         this.courseInfo = r.data.order

@@ -127,4 +127,30 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
 
         return resultList.stream().filter(e -> !useBookIds.contains(e.getId())).collect(Collectors.toList());
     }
+
+    /**
+     * 获取学生详情
+     *
+     * @param userId 学生ID
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> selectBookDetail(Integer userId) {
+        // 返回数据
+        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>() {
+            {
+                put("user", null);
+                put("order", Collections.emptyList());
+            }
+        };
+
+        // 学生信息
+        StudentInfo studentInfo = this.getOne(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getUserId, userId));
+        result.put("user", studentInfo);
+
+        // 付款记录
+        List<PayRecord> payRecordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()).eq(PayRecord::getStatus, "1s"));
+        result.put("order", payRecordList);
+        return result;
+    }
 }
