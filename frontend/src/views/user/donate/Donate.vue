@@ -62,7 +62,7 @@
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
-import recordView from './RecycleView.vue'
+import recordView from './DonateView.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
@@ -178,7 +178,7 @@ export default {
           }
         }
       }, {
-        title: '回收地址',
+        title: '捐赠地址',
         dataIndex: 'address',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -333,7 +333,7 @@ export default {
       if (params.type === undefined) {
         delete params.type
       }
-      params.recucleType = 2
+      params.recucleType = 1
       this.$get('/cos/recycle-info/page', {
         ...params
       }).then((r) => {

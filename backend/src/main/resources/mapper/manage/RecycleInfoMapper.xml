@@ -16,6 +16,7 @@
         si.code,
         si.images as studentImages,
         bi.book_name,
+        bi.auther,
         bi.`type`,
         bi.images
         from

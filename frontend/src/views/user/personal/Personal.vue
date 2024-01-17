@@ -111,7 +111,7 @@
                     @preview="handlePreview"
                     @change="picHandleChange"
                   >
-                    <div v-if="fileList.length < 8">
+                    <div v-if="fileList.length < 1">
                       <a-icon type="plus" />
                       <div class="ant-upload-text">
                         Upload
@@ -199,6 +199,15 @@ export default {
         this.classList = r.data.data
       })
     },
+    imagesInit (images) {
+      if (images !== null && images !== '') {
+        let imageList = []
+        images.split(',').forEach((image, index) => {
+          imageList.push({uid: index, name: image, status: 'done', url: 'http://127.0.0.1:9527/imagesWeb/' + image})
+        })
+        this.fileList = imageList
+      }
+    },
     isDuringDate (beginDateStr, endDateStr, curDataStr) {
       let curDate = new Date(curDataStr)
       let beginDate = new Date(beginDateStr)
@@ -220,17 +229,18 @@ export default {
     dataInit () {
       this.dataLoading = true
       this.$get(`/cos/student-info/detail/${this.currentUser.userId}`).then((r) => {
+        console.log(r.data.user)
         this.rowId = r.data.user.id
         this.setFormValues(r.data.user)
         this.courseInfo = r.data.order
         this.dataLoading = false
       })
     },
-    setFormValues ({...student}) {
-      this.rowId = student.id
+    setFormValues ({...user}) {
+      this.rowId = user.id
       let fields = ['studentName', 'code', 'phone', 'province', 'city', 'area', 'address', 'classId', 'sex', 'birthday', 'major']
       let obj = {}
-      Object.keys(student).forEach((key) => {
+      Object.keys(user).forEach((key) => {
         if (key === 'images') {
           this.fileList = []
           this.imagesInit(user['images'])
@@ -242,7 +252,7 @@ export default {
         }
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
-          obj[key] = student[key]
+          obj[key] = user[key]
         }
       })
       this.form.setFieldsValue(obj)
