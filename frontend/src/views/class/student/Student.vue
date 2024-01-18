@@ -1,9 +1,16 @@
 <template>
   <a-row :gutter="20" style="width: 100%;margin-top: 20px">
     <a-col :span="24" style="margin-top: 15px;margin-bottom: 35px;">
-      <a-input-search placeholder="搜索学生" style="width: 300px;margin: 0 auto" v-model="key" @search="selectDrugList" />
+      所属班级：
+      <a-select @change="handleChange" style="width: 300px">
+        <a-select-option :value="item.id" v-for="(item, index) in classList" :key="index">{{ item.className }}</a-select-option>
+      </a-select>
     </a-col>
     <a-col :span="24"></a-col>
+    <div v-if="studentList.length === 0" style="text-align: center;margin-top: 30px">
+      <a-icon type="smile" theme="twoTone" style="font-size: 75px"/>
+      <h1 style="margin-top: 20px">暂无学生信息</h1>
+    </div>
     <a-col :span="6" v-for="(item, index) in studentList" :key="index" style="margin-bottom: 15px">
       <div style="width: 100%;margin-bottom: 15px;text-align: left;box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;">
         <a-card :bordered="false" @click="handleUserViewOpen(item)" hoverable>
@@ -12,9 +19,9 @@
               <img :src="'http://127.0.0.1:9527/imagesWeb/'+item" style="width: 100%;height: 250px">
             </div>
           </a-carousel>
-          <a-card-meta :title="item.studentName" :description="item.code.slice(0, 18)+'...'" style="margin-top: 10px"></a-card-meta>
+          <a-card-meta :title="item.studentName" :description="'学号：' + item.code" style="margin-top: 10px"></a-card-meta>
           <div style="font-size: 12px;font-family: SimHei;margin-top: 8px">
-            <span>{{ item.birthday }}</span> |
+            <span>出生日期{{ item.birthday }}</span> |
             <span style="color: #f5222d; font-size: 13px;float: right">{{ item.major }}</span>
           </div>
         </a-card>
@@ -62,6 +69,11 @@ export default {
       this.$get('/cos/class-info/list').then((r) => {
         this.classList = r.data.data
       })
+    },
+    handleChange (value) {
+      if (value) {
+        this.selectStudentList(value)
+      }
     },
     selectStudentList (classId) {
       this.$get(`/cos/student-info/selectStudentByClass/${classId}`).then((r) => {
