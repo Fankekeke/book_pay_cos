@@ -1,6 +1,7 @@
 package cc.mrbird.febs.manage.controller;
 
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.PayRecord;
 import cc.mrbird.febs.manage.service.IPayRecordService;
@@ -55,6 +56,17 @@ public class PayRecordController {
     @GetMapping("/home/data")
     public R selectHomeData() {
         return R.ok(payRecordService.homeData());
+    }
+
+    /**
+     * 获取学生统计数据
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/home/data/student/{userId}")
+    public R selectHomeDataByStudent(@PathVariable("userId") Integer userId) throws FebsException {
+        return R.ok(payRecordService.selectHomeDataByStudent(userId));
     }
 
     /**

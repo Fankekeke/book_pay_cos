@@ -55,6 +55,14 @@ public interface IPayRecordService extends IService<PayRecord> {
     void orderPaymentPlatform(String orderCode);
 
     /**
+     * 获取学生统计数据
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectHomeDataByStudent(Integer userId) throws FebsException;
+
+    /**
      * 主页数据
      *
      * @return 结果

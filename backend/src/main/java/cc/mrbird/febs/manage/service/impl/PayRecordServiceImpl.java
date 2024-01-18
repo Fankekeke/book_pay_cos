@@ -38,6 +38,8 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
 
     private final ClassBindBookInfoMapper classBindBookInfoMapper;
 
+    private final MessageInfoMapper messageInfoMapper;
+
     /**
      * 分页获取支付记录信息
      *
@@ -166,6 +168,48 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         // 更新缴费状态
         payRecord.setStatus("1");
         this.updateById(payRecord);
+    }
+
+    /**
+     * 获取学生统计数据
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> selectHomeDataByStudent(Integer userId) throws FebsException {
+        // 返回数据
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+
+        // 获取学生信息
+        StudentInfo studentInfo = studentInfoMapper.selectOne(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getUserId, userId));
+        if (studentInfo == null) {
+            throw new FebsException("未找到此学生信息");
+        }
+
+        // 公告信息
+        result.put("bulletin", bulletinInfoService.list(Wrappers.<BulletinInfo>lambdaQuery().eq(BulletinInfo::getRackUp, 1)));
+
+        List<PayRecord> recordList = this.list(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()));
+        // 我的图书
+        result.put("bookNum", recordList.size());
+        // 未缴费图书
+        result.put("bookOweNum", recordList.stream().filter(e -> "0".equals(e.getStatus())).count());
+        // 已缴费图书
+        result.put("bookOwnNum", recordList.stream().filter(e -> "1".equals(e.getStatus())).count());
+        // 欠缴金额
+        List<PayRecord> oweRecordList = recordList.stream().filter(e -> "0".equals(e.getStatus())).collect(Collectors.toList());
+        result.put("owePrice", CollectionUtil.isEmpty(oweRecordList) ? BigDecimal.ZERO : oweRecordList.stream().map(PayRecord::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
+
+        // 欠交图书信息
+        List<Integer> bookletList = oweRecordList.stream().map(PayRecord::getBookId).collect(Collectors.toList());
+        List<BookInfo> bookList = bookInfoMapper.selectList(Wrappers.<BookInfo>lambdaQuery().in(BookInfo::getId, bookletList));
+        result.put("oweBook", bookList);
+
+        // 消息通知
+        List<MessageInfo> messageList = messageInfoMapper.selectList(Wrappers.<MessageInfo>lambdaQuery().eq(MessageInfo::getStudentId, studentInfo.getId()));
+        result.put("message", messageList);
+        return result;
     }
 
     /**
