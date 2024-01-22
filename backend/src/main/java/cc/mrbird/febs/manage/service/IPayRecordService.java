@@ -1,6 +1,7 @@
 package cc.mrbird.febs.manage.service;
 
 import cc.mrbird.febs.common.exception.FebsException;
+import cc.mrbird.febs.manage.entity.MessageInfo;
 import cc.mrbird.febs.manage.entity.PayRecord;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -53,6 +55,22 @@ public interface IPayRecordService extends IService<PayRecord> {
      * @param orderCode 订单编号
      */
     void orderPaymentPlatform(String orderCode);
+
+    /**
+     * 发送消息
+     *
+     * @param studentId  学生ID
+     * @param bookIdList 图书ID
+     */
+    void sendMessage(Integer studentId, List<Integer> bookIdList);
+
+    /**
+     * 根据班级发送消息
+     *
+     * @param classId 班级ID
+     * @param bookId  图书ID
+     */
+    void sendMessageByClass(Integer classId, Integer bookId);
 
     /**
      * 获取学生统计数据

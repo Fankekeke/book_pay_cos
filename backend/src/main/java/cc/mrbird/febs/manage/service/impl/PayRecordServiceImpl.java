@@ -4,6 +4,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.manage.dao.*;
 import cc.mrbird.febs.manage.entity.*;
 import cc.mrbird.febs.manage.service.IBulletinInfoService;
+import cc.mrbird.febs.manage.service.IMessageInfoService;
 import cc.mrbird.febs.manage.service.IPayRecordService;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
 import cn.hutool.core.collection.CollectionUtil;
@@ -16,6 +17,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -39,6 +41,8 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
     private final ClassBindBookInfoMapper classBindBookInfoMapper;
 
     private final MessageInfoMapper messageInfoMapper;
+
+    private final IMessageInfoService messageInfoService;
 
     /**
      * 分页获取支付记录信息
@@ -91,6 +95,7 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
      * @param bookId  图书ID
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addClassBind(Integer classId, Integer bookId) throws FebsException {
         // 获取班级信息
         ClassInfo classInfo = classInfoMapper.selectById(classId);
@@ -120,7 +125,7 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
             payRecord.setCreateDate(DateUtil.formatDateTime(new Date()));
             recordList.add(payRecord);
         }
-
+        this.sendMessageByClass(classId, bookId);
         this.saveBatch(recordList);
     }
 
@@ -131,6 +136,7 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
      * @param classId   班级ID
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addStudentBind(Integer studentId, Integer classId) {
         // 获取班级绑定的图书信息
         List<ClassBindBookInfo> bindList = classBindBookInfoMapper.selectList(Wrappers.<ClassBindBookInfo>lambdaQuery().eq(ClassBindBookInfo::getClassId, classId));
@@ -154,6 +160,7 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
             payRecord.setCreateDate(DateUtil.formatDateTime(new Date()));
             recordList.add(payRecord);
         }
+        this.sendMessage(studentId, bookIds);
         this.saveBatch(recordList);
     }
 
@@ -171,6 +178,69 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
     }
 
     /**
+     * 发送消息
+     *
+     * @param studentId  学生ID
+     * @param bookIdList 图书ID
+     */
+    @Override
+    public void sendMessage(Integer studentId, List<Integer> bookIdList) {
+        if (CollectionUtil.isEmpty(bookIdList)) {
+            return;
+        }
+
+        List<BookInfo> bookList = bookInfoMapper.selectBatchIds(bookIdList);
+        Map<Integer, BookInfo> bookMap = bookList.stream().collect(Collectors.toMap(BookInfo::getId, e -> e));
+        // 待添加的消息信息
+        List<MessageInfo> messageList = new ArrayList<>();
+
+        for (Integer bookId : bookIdList) {
+            if (CollectionUtil.isEmpty(bookMap) || bookMap.get(bookId) == null) {
+                continue;
+            }
+            BookInfo bookInfo = bookMap.get(bookId);
+            MessageInfo info = new MessageInfo();
+            info.setContent("你好，添加了新的图书采购《" + bookInfo.getBookName() + "》, 需缴纳金额" + bookInfo.getPrice() + "元, 请尽快缴费.");
+            info.setStatus("0");
+            info.setStudentId(studentId);
+            info.setCreateDate(DateUtil.formatDateTime(new Date()));
+            messageList.add(info);
+        }
+
+        messageInfoService.saveBatch(messageList);
+    }
+
+    /**
+     * 根据班级发送消息
+     *
+     * @param classId 班级ID
+     * @param bookId  图书ID
+     */
+    @Override
+    public void sendMessageByClass(Integer classId, Integer bookId) {
+        // 获取班级学生信息
+        List<StudentInfo> studentList = studentInfoMapper.selectList(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getClassId, classId));
+        if (CollectionUtil.isEmpty(studentList)) {
+            return;
+        }
+
+        BookInfo bookInfo = bookInfoMapper.selectById(bookId);
+
+        // 待添加的消息信息
+        List<MessageInfo> messageList = new ArrayList<>();
+        for (StudentInfo student : studentList) {
+            MessageInfo info = new MessageInfo();
+            info.setContent("你好，添加了新的图书采购《" + bookInfo.getBookName() + "》, 需缴纳金额" + bookInfo.getPrice() + "元, 请尽快缴费.");
+            info.setStatus("0");
+            info.setStudentId(student.getId());
+            info.setCreateDate(DateUtil.formatDateTime(new Date()));
+            messageList.add(info);
+        }
+
+        messageInfoService.saveBatch(messageList);
+    }
+
+    /**s
      * 获取学生统计数据
      *
      * @param userId 用户ID

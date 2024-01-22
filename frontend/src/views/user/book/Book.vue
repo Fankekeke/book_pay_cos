@@ -64,7 +64,7 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="cloud" @click="handlebookViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
-          <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改" style="margin-right: 10px"></a-icon>
+          <a-icon type="alipay" @click="pay(record)" title="支 付" style="margin-left: 15px"></a-icon>
         </template>
       </a-table>
     </div>
@@ -193,6 +193,23 @@ export default {
     this.fetch()
   },
   methods: {
+    pay (row) {
+      let data = { outTradeNo: row.code, subject: `${row.bookName}缴费`, totalAmount: row.price, body: '' }
+      this.$post('/cos/pay/alipay', data).then((r) => {
+        // console.log(r.data.msg)
+        // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
+        const divForm = document.getElementsByTagName('div')
+        if (divForm.length) {
+          document.body.removeChild(divForm[0])
+        }
+        const div = document.createElement('div')
+        div.innerHTML = r.data.msg // data就是接口返回的form 表单字符串
+        // console.log(div.innerHTML)
+        document.body.appendChild(div)
+        document.forms[0].setAttribute('target', '_self') // 新开窗口跳转
+        document.forms[0].submit()
+      })
+    },
     handlebookViewOpen (row) {
       this.bookView.data = row
       this.bookView.visiable = true

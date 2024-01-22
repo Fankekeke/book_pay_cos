@@ -7,8 +7,8 @@
       </a-select>
     </a-col>
     <a-col :span="24"></a-col>
-    <div v-if="studentList.length === 0" style="text-align: center;margin-top: 30px">
-      <a-icon type="smile" theme="twoTone" style="font-size: 75px"/>
+    <div v-if="studentList.length === 0" style="text-align: center;">
+      <a-icon type="smile" theme="twoTone" style="font-size: 75px;margin-top: 30px"/>
       <h1 style="margin-top: 20px">暂无学生信息</h1>
     </div>
     <a-col :span="6" v-for="(item, index) in studentList" :key="index" style="margin-bottom: 15px">
