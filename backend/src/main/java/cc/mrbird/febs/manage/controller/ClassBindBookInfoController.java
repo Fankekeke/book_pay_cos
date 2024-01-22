@@ -7,6 +7,7 @@ import cc.mrbird.febs.manage.entity.ClassBindBookInfo;
 import cc.mrbird.febs.manage.service.IClassBindBookInfoService;
 import cc.mrbird.febs.manage.service.IPayRecordService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,12 @@ public class ClassBindBookInfoController {
      */
     @PostMapping
     public R save(ClassBindBookInfo classBindBookInfo) throws FebsException {
+        // 判断此班级是否已经绑定
+        int count = classBindBookInfoService.count(Wrappers.<ClassBindBookInfo>lambdaQuery().eq(ClassBindBookInfo::getClassId, classBindBookInfo.getClassId())
+                .eq(ClassBindBookInfo::getBookId, classBindBookInfo.getBookId()));
+        if (count > 0) {
+            throw new FebsException("此班级已经绑定该图书");
+        }
         classBindBookInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         payRecordService.addClassBind(classBindBookInfo.getClassId(), classBindBookInfo.getBookId());
         return R.ok(classBindBookInfoService.save(classBindBookInfo));
