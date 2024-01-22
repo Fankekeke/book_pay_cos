@@ -31,7 +31,7 @@
     </div>
     <div>
       <div class="operator">
-<!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
+        <a-button type="primary" ghost @click="add">新增</a-button>
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -64,6 +64,12 @@
       :recordShow="recordView.visiable"
       :recordData="recordView.data">
     </record-view>
+    <classes-book-add
+      v-if="classAdd.visiable"
+      @close="handleclassAddClose"
+      @success="handleclassAddSuccess"
+      :classAddVisiable="classAdd.visiable">
+    </classes-book-add>
   </a-card>
 </template>
 
@@ -71,16 +77,20 @@
 import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
 import recordView from './ClassesBookView.vue'
+import classesBookAdd from './ClassesBookAdd.vue'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
   name: 'record',
-  components: {RangeDate, recordView},
+  components: {RangeDate, recordView, classesBookAdd},
   data () {
     return {
       advanced: false,
       recordAdd: {
+        visiable: false
+      },
+      classAdd: {
         visiable: false
       },
       recordEdit: {
@@ -194,6 +204,12 @@ export default {
     this.fetch()
   },
   methods: {
+    add () {
+      this.classAdd.visiable = true
+    },
+    handleclassAddClose () {
+      this.classAdd.visiable = false
+    },
     handlerecordViewOpen (row) {
       this.recordView.data = row
       this.recordView.visiable = true
@@ -206,12 +222,6 @@ export default {
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
-    },
-    add () {
-      this.recordAdd.visiable = true
-    },
-    handlerecordAddClose () {
-      this.recordAdd.visiable = false
     },
     handlerecordAddSuccess () {
       this.recordAdd.visiable = false

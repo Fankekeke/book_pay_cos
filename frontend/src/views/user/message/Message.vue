@@ -164,7 +164,7 @@ export default {
   methods: {
     editStatus (record) {
       record.status = '1'
-      this.$put('/cos/book-info', record).then((r) => {
+      this.$put('/cos/message-info', record).then((r) => {
         this.$message.success('更新状态成功')
         this.fetch()
       })

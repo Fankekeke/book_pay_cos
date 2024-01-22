@@ -65,7 +65,6 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="cloud" @click="handlemessageViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
-          <a-icon v-if="record.status == 0" type="tag" theme="twoTone" twoToneColor="#4a9ff5" @click="editStatus(record)" title="修 改" style="margin-right: 10px"></a-icon>
         </template>
       </a-table>
     </div>
@@ -181,7 +180,7 @@ export default {
   methods: {
     editStatus (record) {
       record.status = '1'
-      this.$put('/cos/book-info', record).then((r) => {
+      this.$put('/cos/message-info', record).then((r) => {
         this.$message.success('更新状态成功')
         this.fetch()
       })
