@@ -4,18 +4,19 @@
       <a-input-search placeholder="搜索图书" style="width: 300px;margin: 0 auto" v-model="key" @search="selectDrugList" />
     </a-col>
     <a-col :span="24"></a-col>
-    <a-col :span="6" v-for="(item, index) in studentList" :key="index" style="margin-bottom: 15px">
+    <a-col :span="6" v-for="(item, index) in bookList1" :key="index" style="margin-bottom: 15px">
       <div style="width: 100%;margin-bottom: 15px;text-align: left;box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;">
-        <a-card :bordered="false" @click="handleUserViewOpen(item)" hoverable>
+        <a-card :bordered="false" @click="handlebookViewOpen(item)" hoverable>
           <a-carousel autoplay style="height: 150px;" v-if="item.images !== undefined && item.images !== ''">
             <div style="width: 100%;height: 150px" v-for="(item, index) in item.images.split(',')" :key="index">
               <img :src="'http://127.0.0.1:9527/imagesWeb/'+item" style="width: 100%;height: 250px">
             </div>
           </a-carousel>
-          <a-card-meta :title="item.studentName" :description="item.code.slice(0, 18)+'...'" style="margin-top: 10px"></a-card-meta>
+          <a-card-meta :title="item.bookName" :description="item.bookName.slice(0, 18)+'...'" style="margin-top: 10px"></a-card-meta>
           <div style="font-size: 12px;font-family: SimHei;margin-top: 8px">
-            <span>{{ item.birthday }}</span> |
-            <span style="color: #f5222d; font-size: 13px;float: right">{{ item.major }}</span>
+            <span>{{ item.auther }}</span> |
+            <span>{{ item.press }}</span> |
+            <span style="color: #f5222d; font-size: 13px;float: right">{{ item.price }}</span>
           </div>
         </a-card>
       </div>
@@ -29,12 +30,12 @@
 </template>
 
 <script>
-import BooktView from '../manage/book/BookView'
+import BookView from '../../manage/book/BookView.vue'
 import {mapState} from 'vuex'
 
 export default {
   name: 'Cart',
-  components: {BooktView},
+  components: {BookView},
   computed: {
     ...mapState({
       currentUser: state => state.account.user

@@ -21,7 +21,7 @@
           </a-carousel>
           <a-card-meta :title="item.studentName" :description="'学号：' + item.code" style="margin-top: 10px"></a-card-meta>
           <div style="font-size: 12px;font-family: SimHei;margin-top: 8px">
-            <span>出生日期{{ item.birthday }}</span> |
+            <span>出生日期：{{ item.birthday }}</span> |
             <span style="color: #f5222d; font-size: 13px;float: right">{{ item.major }}</span>
           </div>
         </a-card>
