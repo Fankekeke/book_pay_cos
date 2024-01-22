@@ -6,6 +6,8 @@ import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.StudentInfo;
 import cc.mrbird.febs.manage.service.IPayRecordService;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
+import cc.mrbird.febs.system.dao.UserMapper;
+import cc.mrbird.febs.system.service.UserService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -27,6 +29,8 @@ public class StudentInfoController {
     private final IStudentInfoService studentInfoService;
 
     private final IPayRecordService payRecordService;
+
+    private final UserService userService;
     /**
      * 分页获取学生信息
      *
@@ -111,16 +115,18 @@ public class StudentInfoController {
      * @return 结果
      */
     @PostMapping
-    public R save(StudentInfo studentInfo) throws FebsException {
+    public R save(StudentInfo studentInfo) throws Exception {
         boolean check = studentInfoService.checkCode(studentInfo.getCode(), null);
         if (check) {
             throw new FebsException("学号不能为空");
         }
         studentInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        boolean result = studentInfoService.save(studentInfo);
+        userService.registUser(studentInfo.getCode(), "1234qwer", studentInfo);
 
         payRecordService.addStudentBind(studentInfo.getId(), studentInfo.getClassId());
-        return R.ok(result);
+
+        // 添加登录用户
+        return R.ok();
     }
 
     /**
