@@ -31,11 +31,12 @@
 
 <script>
 import BookView from '../../manage/book/BookView.vue'
+import BookRecycleAdd from './BookRecycleAdd.vue'
 import {mapState} from 'vuex'
 
 export default {
   name: 'Cart',
-  components: {BookView},
+  components: {BookView, BookRecycleAdd},
   computed: {
     ...mapState({
       currentUser: state => state.account.user

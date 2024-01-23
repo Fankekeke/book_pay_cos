@@ -210,6 +210,11 @@ export default {
     handleclassAddClose () {
       this.classAdd.visiable = false
     },
+    handleclassAddSuccess () {
+      this.classAdd.visiable = false
+      this.$message.success('新增绑定成功')
+      this.search()
+    },
     handlerecordViewOpen (row) {
       this.recordView.data = row
       this.recordView.visiable = true

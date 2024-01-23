@@ -3,8 +3,11 @@ package cc.mrbird.febs.manage.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.RecycleInfo;
+import cc.mrbird.febs.manage.entity.StudentInfo;
 import cc.mrbird.febs.manage.service.IRecycleInfoService;
+import cc.mrbird.febs.manage.service.IStudentInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ import java.util.List;
 public class RecycleInfoController {
 
     private final IRecycleInfoService recycleInfoService;
+
+    private final IStudentInfoService studentInfoService;
 
     /**
      * 分页获取图书回收信息
@@ -75,6 +80,11 @@ public class RecycleInfoController {
      */
     @PostMapping
     public R save(RecycleInfo recycleInfo) {
+        // 获取学生信息
+        StudentInfo studentInfo = studentInfoService.getOne(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getUserId, recycleInfo.getStudentId()));
+        if (studentInfo != null) {
+            recycleInfo.setStudentId(studentInfo.getId());
+        }
         recycleInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(recycleInfoService.save(recycleInfo));
     }
