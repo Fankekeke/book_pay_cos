@@ -174,6 +174,7 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         PayRecord payRecord = this.getOne(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getCode, orderCode));
         // 更新缴费状态
         payRecord.setStatus("1");
+        payRecord.setPayDate(DateUtil.formatDateTime(new Date()));
         this.updateById(payRecord);
     }
 

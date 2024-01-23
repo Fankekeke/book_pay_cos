@@ -22,7 +22,7 @@ export default {
   },
   mounted () {
     if (getUrlKey('out_trade_no') !== null) {
-      this.$get('/cos/order-info/payment', { orderCode: getUrlKey('out_trade_no') }).then((r) => {
+      this.$get('/cos/pay-record/payment', { orderCode: getUrlKey('out_trade_no') }).then((r) => {
       })
     }
   }

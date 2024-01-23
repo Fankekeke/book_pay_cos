@@ -15,6 +15,7 @@
         si.code as studentCode,
         si.student_name,
         si.images as studentImages,
+        pr.code as recordCode,
         bi.*
         from
         pay_record pr

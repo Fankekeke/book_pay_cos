@@ -77,7 +77,7 @@ export default {
       previewVisible: false,
       previewImage: '',
       classList: [],
-      bookList
+      bookList: []
     }
   },
   mounted () {

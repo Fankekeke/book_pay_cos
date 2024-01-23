@@ -61,6 +61,9 @@ export default {
   props: {
     classAddVisiable: {
       default: false
+    },
+    classAddData: {
+      default: null
     }
   },
   computed: {

@@ -194,7 +194,7 @@ export default {
   },
   methods: {
     pay (row) {
-      let data = { outTradeNo: row.code, subject: `${row.bookName}缴费`, totalAmount: row.price, body: '' }
+      let data = { outTradeNo: row.recordCode, subject: `${row.bookName}缴费`, totalAmount: row.price, body: '' }
       this.$post('/cos/pay/alipay', data).then((r) => {
         // console.log(r.data.msg)
         // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
