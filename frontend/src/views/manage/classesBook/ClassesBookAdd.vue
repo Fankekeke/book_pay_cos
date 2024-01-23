@@ -80,6 +80,10 @@ export default {
       bookList
     }
   },
+  mounted () {
+    this.selectClassList()
+    this.selectBookList()
+  },
   methods: {
     selectClassList () {
       this.$get('/cos/class-info/list').then((r) => {
