@@ -305,7 +305,7 @@ export default {
     },
     selectHomeByStudentData () {
       this.$get(`/cos/pay-record/home/data/student/${userId}`).then((r) => {
-
+        let titleData = { bookNum: r.data.bookNum, bookOweNum: r.data.bookOweNum, bookOwnNum: r.data.bookOwnNum, owePrice: r.data.owePrice }
       })
     }
   }
