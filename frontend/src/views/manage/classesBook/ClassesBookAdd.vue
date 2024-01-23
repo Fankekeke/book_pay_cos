@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="新增班级图书绑定" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增班级图书绑定" @cancel="onClose" :width="500">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
@@ -10,12 +10,24 @@
     </template>
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
-        <a-col :span="12">
-          <a-form-item label='班级名称' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'className',
-            { rules: [{ required: true, message: '请输入班级名称!' }] }
-            ]"/>
+        <a-col :span="24">
+          <a-form-item label='所属班级' v-bind="formItemLayout">
+            <a-select v-decorator="[
+              'classId',
+              { rules: [{ required: true, message: '请输入所属班级!' }] }
+              ]">
+              <a-select-option :value="item.id" v-for="(item, index) in classList" :key="index">{{ item.className }}</a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label='绑定图书' v-bind="formItemLayout">
+            <a-select v-decorator="[
+              'bookId',
+              { rules: [{ required: true, message: '请输入绑定图书!' }] }
+              ]">
+              <a-select-option :value="item.id" v-for="(item, index) in bookList" :key="index">{{ item.bookName }}</a-select-option>
+            </a-select>
           </a-form-item>
         </a-col>
       </a-row>
@@ -64,13 +76,19 @@ export default {
       fileList: [],
       previewVisible: false,
       previewImage: '',
-      classList: []
+      classList: [],
+      bookList
     }
   },
   methods: {
     selectClassList () {
       this.$get('/cos/class-info/list').then((r) => {
         this.classList = r.data.data
+      })
+    },
+    selectBookList () {
+      this.$get('/cos/book-info/list').then((r) => {
+        this.bookList = r.data.data
       })
     },
     handleCancel () {
@@ -104,7 +122,7 @@ export default {
         values.images = images.length > 0 ? images.join(',') : null
         if (!err) {
           this.loading = true
-          this.$post('/cos/class-info', {
+          this.$post('/cos/class-bind-book-info', {
             ...values
           }).then((r) => {
             this.reset()

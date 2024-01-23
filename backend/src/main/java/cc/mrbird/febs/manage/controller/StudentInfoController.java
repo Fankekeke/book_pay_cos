@@ -126,7 +126,7 @@ public class StudentInfoController {
         payRecordService.addStudentBind(studentInfo.getId(), studentInfo.getClassId());
 
         // 添加登录用户
-        return R.ok();
+        return R.ok(true);
     }
 
     /**
