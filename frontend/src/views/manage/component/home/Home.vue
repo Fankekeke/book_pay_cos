@@ -302,6 +302,11 @@ export default {
           console.log(this.chartOptions2.labels)
         }
       })
+    },
+    selectHomeByStudentData () {
+      this.$get(`/cos/pay-record/home/data/student/${userId}`).then((r) => {
+
+      })
     }
   }
 }
