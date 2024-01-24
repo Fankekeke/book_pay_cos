@@ -77,12 +77,12 @@ export default {
   methods: {
     selectUseBookList () {
       this.$get(`/cos/student-info/use/book/list/${this.currentUser.userId}`).then((r) => {
-        this.bookList2 = r.data.data
+        this.bookList1 = r.data.data
       })
     },
     selectBookList () {
       this.$get(`/cos/student-info/book/list/${this.currentUser.userId}`).then((r) => {
-        this.bookList1 = r.data.data
+        this.bookList2 = r.data.data
       })
     },
     handlebookAddOpen (row) {
@@ -99,6 +99,7 @@ export default {
     handlebookAddClose () {
       this.bookAdd.visiable = false
       this.$message.success('回收捐赠成功')
+      this.selectUseBookList()
     },
     handlebookViewClose () {
       this.bookView.visiable = false

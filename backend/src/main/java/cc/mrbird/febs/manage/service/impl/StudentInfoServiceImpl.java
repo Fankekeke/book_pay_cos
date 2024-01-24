@@ -83,7 +83,7 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         StudentInfo studentInfo = this.getOne(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getUserId, userId));
 
         // 缴费完成图书
-        List<PayRecord> recordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()));
+        List<PayRecord> recordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()).eq(PayRecord::getStatus, "1"));
         if (CollectionUtil.isEmpty(recordList)) {
             return Collections.emptyList();
         }
@@ -105,7 +105,7 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         StudentInfo studentInfo = this.getOne(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getUserId, userId));
 
         // 缴费完成图书
-        List<PayRecord> recordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()));
+        List<PayRecord> recordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()).eq(PayRecord::getStatus, "1"));
         if (CollectionUtil.isEmpty(recordList)) {
             return Collections.emptyList();
         }
