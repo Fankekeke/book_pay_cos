@@ -280,6 +280,8 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         // 消息通知
         List<MessageInfo> messageList = messageInfoMapper.selectList(Wrappers.<MessageInfo>lambdaQuery().eq(MessageInfo::getStudentId, studentInfo.getId()));
         result.put("message", messageList);
+
+        result.put("student", studentInfo);
         return result;
     }
 

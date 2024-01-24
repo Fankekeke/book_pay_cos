@@ -4,6 +4,10 @@
       <a-input-search placeholder="搜索图书" style="width: 300px;margin: 0 auto" v-model="key" @search="selectDrugList" />
     </a-col>
     <a-col :span="24"></a-col>
+    <div v-if="bookList1.length === 0" style="text-align: center;">
+      <a-icon type="smile" theme="twoTone" style="font-size: 75px;margin-top: 30px"/>
+      <h1 style="margin-top: 20px">暂无图书信息</h1>
+    </div>
     <a-col :span="6" v-for="(item, index) in bookList1" :key="index" style="margin-bottom: 15px">
       <div style="width: 100%;margin-bottom: 15px;text-align: left;box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;">
         <a-card :bordered="false" hoverable>
