@@ -149,7 +149,7 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         result.put("user", studentInfo);
 
         // 付款记录
-        List<PayRecord> payRecordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()).eq(PayRecord::getStatus, "1s"));
+        List<PayRecord> payRecordList = payRecordMapper.selectList(Wrappers.<PayRecord>lambdaQuery().eq(PayRecord::getStudentId, studentInfo.getId()).eq(PayRecord::getStatus, "1"));
         result.put("order", payRecordList);
         return result;
     }
