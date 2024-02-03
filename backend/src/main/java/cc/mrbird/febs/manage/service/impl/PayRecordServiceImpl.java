@@ -274,7 +274,10 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
 
         // 欠交图书信息
         List<Integer> bookletList = oweRecordList.stream().map(PayRecord::getBookId).collect(Collectors.toList());
-        List<BookInfo> bookList = bookInfoMapper.selectList(Wrappers.<BookInfo>lambdaQuery().in(BookInfo::getId, bookletList));
+        List<BookInfo> bookList = Collections.emptyList();
+        if (CollectionUtil.isNotEmpty(bookletList)) {
+            bookList = bookInfoMapper.selectList(Wrappers.<BookInfo>lambdaQuery().in(BookInfo::getId, bookletList));
+        }
         result.put("oweBook", bookList);
 
         // 消息通知

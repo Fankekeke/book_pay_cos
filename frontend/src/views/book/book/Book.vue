@@ -1,8 +1,8 @@
 <template>
   <a-row :gutter="20" style="width: 100%;margin-top: 20px">
-    <a-col :span="24" style="margin-top: 15px;margin-bottom: 35px;">
-      <a-input-search placeholder="搜索图书" style="width: 300px;margin: 0 auto" v-model="key" @search="selectDrugList" />
-    </a-col>
+<!--    <a-col :span="24" style="margin-top: 15px;margin-bottom: 35px;">-->
+<!--      <a-input-search placeholder="搜索图书" style="width: 300px;margin: 0 auto" v-model="key" @search="selectDrugList" />-->
+<!--    </a-col>-->
     <a-col :span="24"></a-col>
     <div v-if="bookList1.length === 0" style="text-align: center;">
       <a-icon type="smile" theme="twoTone" style="font-size: 75px;margin-top: 30px"/>
