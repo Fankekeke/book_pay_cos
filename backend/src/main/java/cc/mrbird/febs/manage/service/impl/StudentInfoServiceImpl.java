@@ -68,7 +68,7 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
             return false;
         }
 
-        return id != null && (studentList.size() > 1 || !studentList.get(0).getId().equals(id));
+        return studentList.size() > 1 || (id != null && !studentList.get(0).getId().equals(id));
     }
 
     /**

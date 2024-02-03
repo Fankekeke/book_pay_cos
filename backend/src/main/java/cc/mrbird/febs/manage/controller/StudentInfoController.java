@@ -31,6 +31,7 @@ public class StudentInfoController {
     private final IPayRecordService payRecordService;
 
     private final UserService userService;
+
     /**
      * 分页获取学生信息
      *
@@ -109,6 +110,22 @@ public class StudentInfoController {
     }
 
     /**
+     * 获取学生姓名
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/username/{userId}")
+    public R selectNameByUser(@PathVariable("userId") Integer userId) {
+        StudentInfo studentInfo = studentInfoService.getOne(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getUserId, userId));
+        if (studentInfo == null) {
+            return R.ok("");
+        } else {
+            return R.ok(studentInfo.getStudentName());
+        }
+    }
+
+    /**
      * 新增学生信息
      *
      * @param studentInfo 学生信息
@@ -118,8 +135,9 @@ public class StudentInfoController {
     public R save(StudentInfo studentInfo) throws Exception {
         boolean check = studentInfoService.checkCode(studentInfo.getCode(), null);
         if (check) {
-            throw new FebsException("学号不能为空");
+            throw new FebsException("学号不能重复");
         }
+
         studentInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         userService.registUser(studentInfo.getCode(), "1234qwer", studentInfo);
 
@@ -137,9 +155,9 @@ public class StudentInfoController {
      */
     @PutMapping
     public R edit(StudentInfo studentInfo) throws FebsException {
-        boolean check = studentInfoService.checkCode(studentInfo.getCode(), null);
+        boolean check = studentInfoService.checkCode(studentInfo.getCode(), studentInfo.getId());
         if (check) {
-            throw new FebsException("学号不能为空");
+            throw new FebsException("学号不能重复");
         }
         return R.ok(studentInfoService.updateById(studentInfo));
     }

@@ -118,14 +118,21 @@ export default {
       const date = new Date()
       const hour = date.getHours()
       let time = hour < 6 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour <= 18 ? '下午好' : '晚上好')))
-      return `${time}，${this.user.username}`
+      if (this.user.roleId.toString() === '75') {
+        this.$get(`/cos/student-info/username/${this.user.userId}`).then((r) => {
+          console.log(`${time}，${r.data.msg}`)
+          this.welcomeMessage = `${time}，${r.data.msg}`
+        })
+      } else {
+        this.welcomeMessage = `${time}，${this.user.username}`
+      }
     },
     setTitleData (titleData) {
       this.titleData = titleData
     }
   },
   mounted () {
-    this.welcomeMessage = this.welcome()
+    this.welcome()
     this.$get(`index/${this.user.username}`).then((r) => {
       let data = r.data.data
       this.todayIp = data.todayIp

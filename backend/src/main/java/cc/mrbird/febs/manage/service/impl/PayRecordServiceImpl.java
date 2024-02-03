@@ -145,6 +145,9 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         }
 
         List<Integer> bookIds = bindList.stream().map(ClassBindBookInfo::getBookId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(bookIds)) {
+            return;
+        }
         List<BookInfo> bookInfoList = bookInfoMapper.selectList(Wrappers.<BookInfo>lambdaQuery().in(BookInfo::getId, bookIds));
         Map<Integer, BigDecimal> bookMap = bookInfoList.stream().collect(Collectors.toMap(BookInfo::getId, BookInfo::getPrice));
 
