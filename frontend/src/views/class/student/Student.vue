@@ -14,7 +14,7 @@
     <a-col :span="6" v-for="(item, index) in studentList" :key="index" style="margin-bottom: 15px">
       <div style="width: 100%;margin-bottom: 15px;text-align: left;box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;">
         <a-card :bordered="false" @click="handleUserViewOpen(item)" hoverable>
-          <a-carousel autoplay style="height: 150px;" v-if="item.images !== undefined && item.images !== ''">
+          <a-carousel autoplay style="height: 150px;" v-if="item.images">
             <div style="width: 100%;height: 150px" v-for="(item, index) in item.images.split(',')" :key="index">
               <img :src="'http://127.0.0.1:9527/imagesWeb/'+item" style="width: 100%;height: 250px">
             </div>
@@ -77,6 +77,7 @@ export default {
     },
     selectStudentList (classId) {
       this.$get(`/cos/student-info/selectStudentByClass/${classId}`).then((r) => {
+        console.log(r.data.data)
         this.studentList = r.data.data
       })
     },

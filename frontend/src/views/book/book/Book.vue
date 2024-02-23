@@ -95,6 +95,8 @@ export default {
     },
     handlebookAddSuccess () {
       this.bookAdd.visiable = false
+      this.$message.success('回收捐赠成功')
+      this.selectUseBookList()
     },
     handlebookViewOpen (row) {
       this.bookView.data = row
@@ -102,7 +104,6 @@ export default {
     },
     handlebookAddClose () {
       this.bookAdd.visiable = false
-      this.$message.success('回收捐赠成功')
       this.selectUseBookList()
     },
     handlebookViewClose () {
