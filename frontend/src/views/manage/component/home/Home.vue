@@ -54,9 +54,23 @@
         </a-row>
       </a-col>
     </a-row>
+    <a-row style="margin-top: 15px" v-if="user.roleId == 74">
+      <a-col :span="12">
+        <a-card hoverable :bordered="false" style="width: 100%">
+          <a-skeleton active v-if="loading" />
+          <apexchart  v-if="!loading" type="line" height="300" :options="chartOptions" :series="series"></apexchart>
+        </a-card>
+      </a-col>
+      <a-col :span="12">
+        <a-card hoverable :bordered="false" style="width: 100%">
+          <a-skeleton active v-if="loading" />
+          <apexchart v-if="!loading" type="bar" height="300" :options="chartOptions1" :series="series1"></apexchart>
+        </a-card>
+      </a-col>
+    </a-row>
     <a-row style="margin-top: 15px">
       <a-col :span="24">
-        <div style="background: #ECECEC; padding: 30px;" v-if="user.roleId == 74">
+        <div style="background: ghostwhite; padding: 30px;" v-if="user.roleId == 74">
           <a-row :gutter="16">
             <a-col :span="6">
               <a-card hoverable>
@@ -162,20 +176,6 @@
         </div>
       </a-col>
     </a-row>
-    <a-row style="margin-top: 15px" v-if="user.roleId == 74">
-      <a-col :span="12">
-        <a-card hoverable :bordered="false" style="width: 100%">
-          <a-skeleton active v-if="loading" />
-          <apexchart  v-if="!loading" type="line" height="300" :options="chartOptions" :series="series"></apexchart>
-        </a-card>
-      </a-col>
-      <a-col :span="12">
-        <a-card hoverable :bordered="false" style="width: 100%">
-          <a-skeleton active v-if="loading" />
-          <apexchart v-if="!loading" type="bar" height="300" :options="chartOptions1" :series="series1"></apexchart>
-        </a-card>
-      </a-col>
-    </a-row>
     <a-row style="margin-top: 15px">
 <!--      <a-col :span="9" v-if="user.roleId == 74">-->
 <!--        <a-card hoverable :bordered="false" style="width: 100%">-->
@@ -183,7 +183,7 @@
 <!--          <apexchart v-if="!loading" type="donut" height="270" :options="chartOptions2" :series="series2"></apexchart>-->
 <!--        </a-card>-->
 <!--      </a-col>-->
-      <a-col :span="15" v-if="user.roleId == 74">
+      <a-col :span="15" v-show="false">
         <a-card hoverable :loading="loading" :bordered="false" title="公告信息" style="margin-top: 15px">
           <div style="padding: 0 22px">
             <a-list item-layout="vertical" :pagination="pagination" :data-source="bulletinList">
@@ -262,7 +262,7 @@ export default {
           enabled: false
         },
         title: {
-          text: '近十天收入统计',
+          text: '收入统计',
           align: 'left'
         },
         markers: {
@@ -278,7 +278,7 @@ export default {
           height: 300
         },
         title: {
-          text: '近十天工单统计',
+          text: '缴费单统计',
           align: 'left'
         },
         plotOptions: {
@@ -329,7 +329,8 @@ export default {
           breakpoint: 380,
           options: {
             chart: {
-              width: 200
+              width: 200,
+              fillColor: '#EB8C87'
             },
             legend: {
               position: 'bottom'
