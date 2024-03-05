@@ -8,6 +8,7 @@ import cc.mrbird.febs.manage.service.IPayRecordService;
 import cc.mrbird.febs.manage.service.IStudentInfoService;
 import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.service.UserService;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -133,8 +134,8 @@ public class StudentInfoController {
      */
     @PostMapping
     public R save(StudentInfo studentInfo) throws Exception {
-        boolean check = studentInfoService.checkCode(studentInfo.getCode(), null);
-        if (check) {
+        List<StudentInfo> studentList = studentInfoService.list(Wrappers.<StudentInfo>lambdaQuery().eq(StudentInfo::getCode, studentInfo.getCode()));
+        if (CollectionUtil.isNotEmpty(studentList)) {
             throw new FebsException("学号不能重复");
         }
 
