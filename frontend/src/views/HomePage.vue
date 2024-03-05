@@ -4,7 +4,8 @@
       <a-card class="head-info-card">
         <a-col :span="12">
           <div class="head-info-avatar">
-            <img alt="头像" :src="avatar">
+            <img alt="头像" :src="userAvatar" v-if="userAvatar">
+            <img alt="头像" :src="avatar" v-else>
           </div>
           <div class="head-info-count">
             <div class="head-info-welcome">
@@ -38,7 +39,7 @@
         </a-col>
       </a-card>
     </a-row>
-    <home @setTitle="setTitleData"></home>
+    <home @setTitle="setTitleData" @imagesInit="imagesInit"></home>
     <a-row :gutter="8" class="count-info" style="margin-top: 15px" v-show="false">
       <a-col :span="12" class="visit-count-wrapper">
         <a-card class="visit-count" hoverable>
@@ -60,6 +61,7 @@ export default {
   components: {Home, HeadInfo},
   data () {
     return {
+      userAvatar: '',
       titleData: {
         orderCode: 0,
         orderPrice: 0,
@@ -126,6 +128,10 @@ export default {
       } else {
         this.welcomeMessage = `${time}，${this.user.username}`
       }
+    },
+    imagesInit (images) {
+      this.userAvatar = 'http://127.0.0.1:9527/imagesWeb/' + images
+      console.log(this.userAvatar)
     },
     setTitleData (titleData) {
       this.titleData = titleData

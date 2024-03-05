@@ -16,7 +16,10 @@
         <a-card :bordered="false" @click="handleUserViewOpen(item)" hoverable>
           <a-carousel autoplay style="height: 150px;" v-if="item.images">
             <div style="width: 100%;height: 150px" v-for="(item, index) in item.images.split(',')" :key="index">
-              <img :src="'http://127.0.0.1:9527/imagesWeb/'+item" style="width: 100%;height: 250px">
+              <a-avatar
+                shape="square" :size="100"
+                :src="'http://127.0.0.1:9527/imagesWeb/' + item"
+              />
             </div>
           </a-carousel>
           <a-card-meta :title="item.studentName" :description="'学号：' + item.code" style="margin-top: 10px"></a-card-meta>

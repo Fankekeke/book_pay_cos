@@ -218,6 +218,7 @@ export default {
   },
   data () {
     return {
+      newsPage: 0,
       newsContent: '',
       pagination: {
         onChange: page => {
@@ -442,6 +443,7 @@ export default {
           if (this.newsList.length !== 0) {
             this.newsContent = `《${this.newsList[0].title}》 ${this.newsList[0].content}`
           }
+          this.$emit('imagesInit', this.student.images)
         })
       }
     }
