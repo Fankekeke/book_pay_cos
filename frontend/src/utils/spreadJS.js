@@ -66,11 +66,13 @@ const fileNameData = {
   claimForm: 'claimForm.json',
   purchasePlan: 'purchasePlan.json',
   inboundOrder: 'inboundOrder.json',
-  outboundOrder: 'outboundOrder.json'
+  outboundOrder: 'outboundOrder.json',
+  textTable: 'text.json'
 }
 
 // 表名对应的开始行index
 const startRowData = {
+  textTable: 1,
   claimForm: 4,
   purchasePlan: 2,
   inboundOrder: 8,

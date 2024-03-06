@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,4 +58,12 @@ public interface IStudentInfoService extends IService<StudentInfo> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectBookDetail(Integer userId);
+
+    /**
+     * 导入学生信息列表
+     *
+     * @param file 文件
+     * @return 结果
+     */
+    String importExcel(MultipartFile file) throws Exception;
 }

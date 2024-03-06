@@ -67,6 +67,7 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="cloud" @click="handlerecordViewOpen(record)" title="详 情" style="margin-right: 10px"></a-icon>
+          <a-icon type="download" @click="download(record)" title="下 载" v-if="record.status == 1"></a-icon>
         </template>
       </a-table>
     </div>
@@ -83,6 +84,7 @@ import RangeDate from '@/components/datetime/RangeDate'
 import {mapState} from 'vuex'
 import recordView from './RecordView.vue'
 import moment from 'moment'
+import { newSpread, fixedForm, saveExcel } from '@/utils/spreadJS'
 moment.locale('zh-cn')
 
 export default {
@@ -192,6 +194,24 @@ export default {
     this.fetch()
   },
   methods: {
+    download (row) {
+      this.$message.loading('正在生成', 0)
+      let spread = newSpread('textTable')
+      let sheet = spread.getActiveSheet()
+      sheet.suspendPaint()
+      sheet.setValue(1, 2, row.studentName)
+      sheet.setValue(1, 4, row.createDate)
+      sheet.setValue(2, 2, row.studentCode)
+      sheet.setValue(4, 2, row.bookName)
+      sheet.setValue(4, 3, '1')
+      sheet.setValue(4, 4, row.price)
+      sheet.setValue(5, 4, row.price + ' 元')
+      // sheet.setValue(data[key].row, data[key].col, dataObject[key])
+      // sheet.setValue(data[key].row, data[key].col, dataObject[key])
+      spread = fixedForm(spread, 'textTable', { title: `${row.bookName}缴费表` })
+      saveExcel(spread, `${row.bookName}缴费表.xlsx`)
+      this.$message.destroy()
+    },
     handlerecordViewOpen (row) {
       this.recordView.data = row
       this.recordView.visiable = true

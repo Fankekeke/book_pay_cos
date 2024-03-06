@@ -59,4 +59,19 @@ public interface PayRecordMapper extends BaseMapper<PayRecord> {
      */
     List<LinkedHashMap<String, Object>> selectOrderPriceWithinDays(@Param("pharmacyId") Integer pharmacyId);
 
+    /**
+     * 根据月份获取订单价格统计
+     *
+     * @param date 时间
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectOrderPriceList(@Param("date") String date);
+
+    /**
+     * 根据月份获取订单数量统计
+     *
+     * @param date 时间
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectOrderNumList(@Param("date") String date);
 }

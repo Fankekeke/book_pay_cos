@@ -2,6 +2,7 @@ package cc.mrbird.febs.manage.controller;
 
 
 import cc.mrbird.febs.common.exception.FebsException;
+import cc.mrbird.febs.common.utils.FileDownloadUtils;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.manage.entity.StudentInfo;
 import cc.mrbird.febs.manage.service.IPayRecordService;
@@ -10,12 +11,15 @@ import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.service.UserService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +47,35 @@ public class StudentInfoController {
     @GetMapping("/page")
     public R page(Page<StudentInfo> page, StudentInfo studentInfo) {
         return R.ok(studentInfoService.selectStudentPage(page, studentInfo));
+    }
+
+    /**
+     * 下载模板
+     */
+    @GetMapping("/template")
+    public void downloadTemplate(HttpServletResponse response) {
+        try {
+            FileDownloadUtils.downloadTemplate(response, "基础数据.xlsx");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 导入学生信息列表
+     */
+    @PostMapping("/import")
+    public R importExcel(@RequestParam("file") MultipartFile file) {
+        try {
+            String errorMsg = studentInfoService.importExcel(file);
+            if (StrUtil.isNotEmpty(errorMsg)) {
+                return R.error(errorMsg);
+            }
+            return R.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return R.error("导入异常");
     }
 
     /**

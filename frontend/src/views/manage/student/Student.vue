@@ -43,6 +43,7 @@
     <div>
       <div class="operator">
         <a-button type="primary" ghost @click="add">新增</a-button>
+        <a-button type="primary" ghost @click="importView">导入</a-button>
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -71,6 +72,11 @@
         </template>
       </a-table>
     </div>
+    <expert-add
+      :expertVisiable="expertAdd.visiable"
+      @close="expertClose"
+      @success="expertSuccess">
+    </expert-add>
     <user-add
       v-if="userAdd.visiable"
       @close="handleuserAddClose"
@@ -98,13 +104,17 @@ import userAdd from './StudentAdd.vue'
 import userEdit from './StudentEdit.vue'
 import userView from './StudentView.vue'
 import moment from 'moment'
+import ExpertAdd from './ExpertAdd.vue'
 moment.locale('zh-cn')
 
 export default {
   name: 'user',
-  components: {RangeDate, userAdd, userEdit, userView},
+  components: {RangeDate, userAdd, userEdit, userView, ExpertAdd},
   data () {
     return {
+      expertAdd: {
+        visiable: false
+      },
       advanced: false,
       userAdd: {
         visiable: false
@@ -209,6 +219,17 @@ export default {
     this.fetch()
   },
   methods: {
+    expertClose () {
+      this.expertAdd.visiable = false
+    },
+    expertSuccess () {
+      this.expertAdd.visiable = false
+      this.$message.success('导入成功')
+      this.fetch()
+    },
+    importView () {
+      this.expertAdd.visiable = true
+    },
     handleUserViewOpen (row) {
       this.userView.data = row
       this.userView.visiable = true

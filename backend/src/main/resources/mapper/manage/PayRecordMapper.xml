@@ -145,4 +145,144 @@
         '%Y')
           and oi.status = '1'
     </select>
+
+    <!-- 根据月份获取订单价格统计 -->
+    <select id="selectOrderPriceList" resultType="java.util.LinkedHashMap">
+        select
+            tempDay.date as name,
+            ifnull(sum(pr.price), 0) as value
+        from
+            (
+                select
+                    date
+                from
+                    (
+                    select
+                    DATE_FORMAT(DATE_SUB(last_day(#{date}), interval xc-1 day), '%Y-%m-%d') as date
+                    from
+                    (
+                    select
+                    @xi := @xi + 1 as xc
+                    from
+                    (
+                    select
+                    1
+                    union
+                    select
+                    2
+                    union
+                    select
+                    3
+                    union
+                    select
+                    4
+                    union
+                    select
+                    5
+                    union
+                    select
+                    6) xc1,
+                    (
+                    select
+                    1
+                    union
+                    select
+                    2
+                    union
+                    select
+                    3
+                    union
+                    select
+                    4
+                    union
+                    select
+                    5
+                    union
+                    select
+                    6) xc2,
+                    (
+                    select
+                    @xi := 0) xc0
+                    ) xcxc) x0
+                where
+                    x0.date >= (
+                    select
+                    date_add(#{date}, interval-day(#{date})+ 1 day))) as tempDay
+                left join pay_record pr on
+                (DATE_FORMAT(tempDay.date, '%Y-%m-%d') = DATE_FORMAT(pr.create_date, '%Y-%m-%d') and pr.`status` = 1)
+        where
+            1 = 1
+        group by
+            tempDay.date
+    </select>
+
+    <!-- 根据月份获取订单数量统计 -->
+    <select id="selectOrderNumList" resultType="java.util.LinkedHashMap">
+        select
+            tempDay.date as name,
+            count(pr.id) as value
+        from
+            (
+                select
+                    date
+                from
+                    (
+                    select
+                    DATE_FORMAT(DATE_SUB(last_day(#{date}), interval xc-1 day), '%Y-%m-%d') as date
+                    from
+                    (
+                    select
+                    @xi := @xi + 1 as xc
+                    from
+                    (
+                    select
+                    1
+                    union
+                    select
+                    2
+                    union
+                    select
+                    3
+                    union
+                    select
+                    4
+                    union
+                    select
+                    5
+                    union
+                    select
+                    6) xc1,
+                    (
+                    select
+                    1
+                    union
+                    select
+                    2
+                    union
+                    select
+                    3
+                    union
+                    select
+                    4
+                    union
+                    select
+                    5
+                    union
+                    select
+                    6) xc2,
+                    (
+                    select
+                    @xi := 0) xc0
+                    ) xcxc) x0
+                where
+                    x0.date >= (
+                    select
+                    date_add(#{date}, interval-day(#{date})+ 1 day))) as tempDay
+                left join pay_record pr on
+                (DATE_FORMAT(tempDay.date, '%Y-%m-%d') = DATE_FORMAT(pr.create_date, '%Y-%m-%d') and pr.`status` = 1)
+        where
+            1 = 1
+        group by
+            tempDay.date
+    </select>
 </mapper>

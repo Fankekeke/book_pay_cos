@@ -86,4 +86,12 @@ public interface IPayRecordService extends IService<PayRecord> {
      * @return 结果
      */
     LinkedHashMap<String, Object> homeData();
+
+    /**
+     * 根据月份获取统计情况
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectStatisticsByMonth(String date) throws FebsException;
 }

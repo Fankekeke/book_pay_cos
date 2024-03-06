@@ -10,6 +10,7 @@ import cc.mrbird.febs.manage.service.IStudentInfoService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -329,6 +330,31 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         result.put("orderNumWithinDays", baseMapper.selectOrderNumWithinDays(null));
         // 近十天内收益统计
         result.put("orderPriceWithinDays", baseMapper.selectOrderPriceWithinDays(null));
+        return result;
+    }
+
+    /**
+     * 根据月份获取统计情况
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> selectStatisticsByMonth(String date) throws FebsException {
+        if (StrUtil.isEmpty(date)) {
+            throw new FebsException("参数不能为空");
+        }
+
+        int year = DateUtil.year(DateUtil.parseDate(date));
+        int month = DateUtil.month(DateUtil.parseDate(date)) + 1;
+
+        // 返回数据
+        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>() {
+            {
+                put("numList", baseMapper.selectOrderNumList(date));
+                put("priceList", baseMapper.selectOrderPriceList(date));
+            }
+        };
         return result;
     }
 }

@@ -59,6 +59,17 @@ public class PayRecordController {
     }
 
     /**
+     * 根据月份获取统计情况
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @GetMapping("/selectStatisticsByMonth")
+    public R selectStatisticsByMonth(@RequestParam("date") String date) throws FebsException {
+        return R.ok(payRecordService.selectStatisticsByMonth(date));
+    }
+
+    /**
      * 获取学生统计数据
      *
      * @param userId 用户ID
