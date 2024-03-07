@@ -248,7 +248,7 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         excelReader.addHeaderAlias("省份", "province");
         excelReader.addHeaderAlias("市区", "city");
         excelReader.addHeaderAlias("区", "area");
-        excelReader.addHeaderAlias("出生日期", "出生日期");
+        excelReader.addHeaderAlias("出生日期", "birthday");
         excelReader.addHeaderAlias("联系方式", "phone");
         excelReader.addHeaderAlias("所属专业", "major");
         excelReader.addHeaderAlias("详细地址", "address");
